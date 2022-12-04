@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card :loading="loading">
         <v-toolbar flat>
             <v-btn icon="mdi-arrow-left" :to="{name: 'home'}" />
             <v-toolbar-title>{{ table }}</v-toolbar-title>
@@ -7,7 +7,7 @@
         <v-divider />
         <v-card-text>
 
-            <v-table :loading="loading">
+            <v-table >
                 <thead>
                     <tr>
                         <th v-for="field in fields" :key="`header_${field.name}`">{{field.name}}</th>
@@ -28,6 +28,7 @@
 
                 </tbody>
             </v-table>
+            <v-pagination v-model="page" :length="Math.ceil(total/pageSize)"></v-pagination>
         </v-card-text>
 
     </v-card>
@@ -36,11 +37,16 @@
 <script setup>
 
 import { useRoute } from 'vue-router';
-import { ref, onMounted, inject, computed } from 'vue';
+import { ref, onMounted, inject, computed, watch } from 'vue';
+
 
 const axios = inject('axios')  // inject axios
 const route = useRoute()
 
+const page = ref(1)
+const pageSize = ref(3)
+
+const total = ref(0)
 const items = ref([])
 const fields = ref([])
 const loading = ref(false)
@@ -51,16 +57,25 @@ onMounted(() => {
     getitems()
 })
 
+watch(page, () =>{
+    getitems()
+})
+
 const getitems = async () => {
     loading.value = true
     try {
         const route = `/${table.value}`
-        const { data } = await axios.get(route)
-        items.value = data
+        const params = { take: pageSize.value, skip: (page.value - 1) * pageSize.value }
+
+        const { data } = await axios.get(route, { params })
+
+        items.value = data.items
+        total.value = data.total
+
     } catch (error) {
         console.error(error)
     } finally {
-        loading.value = true
+        loading.value = false
     }
 }
 
