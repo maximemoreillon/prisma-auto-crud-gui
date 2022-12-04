@@ -4,8 +4,15 @@
             <v-btn icon="mdi-arrow-left" :to="{name: 'items', params: {table}}"/>
             <v-toolbar-title>Item {{ id }}</v-toolbar-title>
         </v-toolbar>
-        <v-card-text>
-            {{item}}
+        <v-card-text v-if="item">
+            <v-row v-for="field in fields" :key="field.name">
+                <v-col>
+                    <v-text-field
+                        :label="field.name"
+                        v-model="item[field.name]"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
         </v-card-text>
 
     </v-card>
@@ -23,8 +30,11 @@ const loading = ref(false)
 const table = computed(() => route.params.table)
 const id = computed(() => route.params.id)
 
-onMounted(() => {
-    getitem()
+const fields = ref([])
+
+onMounted(async () => {
+    await getModel()
+    await getitem()
 })
 
 const getitem = async () => {
@@ -36,7 +46,19 @@ const getitem = async () => {
     } catch (error) {
         console.error(error)
     } finally {
-        loading.value = true
+        loading.value = false
     }
 }
+
+const getModel = async () => {
+    try {
+        const route = `/models/${table.value}`
+        const { data } = await axios.get(route)
+        fields.value = data.fields
+    } catch (error) {
+        console.error(error)
+    } 
+}
+
+
 </script>

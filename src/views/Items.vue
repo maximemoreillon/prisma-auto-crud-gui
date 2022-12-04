@@ -1,17 +1,26 @@
 <template>
-    <v-card :title="table">
+    <v-card>
+        <v-toolbar flat>
+            <v-btn icon="mdi-arrow-left" :to="{name: 'home'}" />
+            <v-toolbar-title>{{ table }}</v-toolbar-title>
+        </v-toolbar>
+        <v-divider />
         <v-card-text>
 
             <v-table :loading="loading">
                 <thead>
                     <tr>
-                        <th class="text-left">ID</th>
+                        <th v-for="field in fields" :key="`header_${field.name}`">{{field.name}}</th>
+
                         <th class="text-left">See</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item in items" :key="item.id">
-                        <td>{{ item.id }}</td>
+                        <td v-for="field in fields" :key="`item_${item.id}_${field.name}`">
+                            {{ item[field.name] }}
+                        </td>
+
                         <td>
                             <v-btn icon="mdi-eye" :to="{ name: 'item', params: {table, id: item.id}}" flat/>
                         </td>
@@ -33,10 +42,12 @@ const axios = inject('axios')  // inject axios
 const route = useRoute()
 
 const items = ref([])
+const fields = ref([])
 const loading = ref(false)
 const table = computed(() => route.params.table)
 
 onMounted(() => {
+    getFields()
     getitems()
 })
 
@@ -53,7 +64,14 @@ const getitems = async () => {
     }
 }
 
-// TODO: Computed to get all properties
-// OR: Get properties from back-end schema
+const getFields = async () => {
+    try {
+        const route = `/models/${table.value}`
+        const { data } = await axios.get(route)
+        fields.value = data.fields
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 </script>
