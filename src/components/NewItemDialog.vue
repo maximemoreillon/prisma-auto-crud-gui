@@ -4,11 +4,11 @@
         <v-btn color="primary" v-bind="props" icon="mdi-plus"/>
     </template>
 
-    <v-card :title="`New ${table}`">
+    <v-card :title="`New ${table}`" :loading="fieldsLoading">
         <v-form @submit.prevent="createItem()">
             <v-card-text>
                 <v-row v-for="field in fields" :key="field.name">
-                    <v-col v-if="(field.name !== 'id' && ['String', 'Int'].includes(field.type))">
+                    <v-col v-if="field.name !== 'id' && ['String', 'Int'].includes(field.type)">
                         <v-text-field :label="field.name" v-model="newitem[field.name]"></v-text-field>
                     </v-col>
                 </v-row>
@@ -16,7 +16,7 @@
             <v-card-actions>
                 <v-spacer />
                 <v-btn color="primary" @click="dialog = false">Close</v-btn>
-                <v-btn color="primary" type="submit">Create {{ table }}</v-btn>
+                <v-btn color="primary" type="submit" :loading="creating">Create {{ table }}</v-btn>
             </v-card-actions>
         </v-form>
         
@@ -34,6 +34,8 @@ const router = useRouter()
 
 const fields = ref([])
 const dialog = ref(false)
+const fieldsLoading = ref(false)
+const creating = ref(false)
 const newitem = reactive({})
 
 const table = computed(() => route.params.table)
@@ -43,16 +45,20 @@ onMounted(() => {
 })
 
 const getFields = async () => {
+    fieldsLoading.value = true
     try {
         const route = `/models/${table.value}`
         const { data } = await axios.get(route)
         fields.value = data.fields
     } catch (error) {
         console.error(error)
+    } finally {
+        fieldsLoading.value = false
     }
 }
 
 const createItem = async () => {
+    creating.value = true
     try {
         const route = `/${table.value}`
         const { data } = await axios.post(route, newitem)
@@ -60,6 +66,8 @@ const createItem = async () => {
 
     } catch (error) {
         console.error(error)
+    } finally {
+        creating.value = false
     }
 }
 

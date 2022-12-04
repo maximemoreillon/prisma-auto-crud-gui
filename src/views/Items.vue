@@ -21,7 +21,7 @@
                             {{ item[field.name] }}
                         </td>
                         <td>
-                            <v-btn icon="mdi-eye" :to="{ name: 'item', params: {table, id: item.id}}" flat/>
+                            <v-btn icon="mdi-arrow-right" :to="{ name: 'item', params: {table, id: item.id}}" flat/>
                         </td>
                     </tr>
                 </tbody>
