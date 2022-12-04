@@ -3,15 +3,15 @@
         <v-toolbar flat>
             <v-btn icon="mdi-arrow-left" :to="{name: 'home'}" />
             <v-toolbar-title>{{ table }}</v-toolbar-title>
+            <v-spacer />
+            <NewItemDialog />
         </v-toolbar>
         <v-divider />
         <v-card-text>
-
             <v-table >
                 <thead>
                     <tr>
                         <th v-for="field in fields" :key="`header_${field.name}`">{{field.name}}</th>
-
                         <th class="text-left">See</th>
                     </tr>
                 </thead>
@@ -20,21 +20,20 @@
                         <td v-for="field in fields" :key="`item_${item.id}_${field.name}`">
                             {{ item[field.name] }}
                         </td>
-
                         <td>
                             <v-btn icon="mdi-eye" :to="{ name: 'item', params: {table, id: item.id}}" flat/>
                         </td>
                     </tr>
-
                 </tbody>
             </v-table>
             <v-pagination v-model="page" :length="Math.ceil(total/pageSize)"></v-pagination>
         </v-card-text>
-
     </v-card>
 </template>
 
 <script setup>
+
+import NewItemDialog from '@/components/NewItemDialog.vue'
 
 import { useRoute } from 'vue-router';
 import { ref, onMounted, inject, computed, watch } from 'vue';
@@ -57,6 +56,7 @@ onMounted(() => {
     getitems()
 })
 
+// TODO: Link page to URL query parameters
 watch(page, () =>{
     getitems()
 })

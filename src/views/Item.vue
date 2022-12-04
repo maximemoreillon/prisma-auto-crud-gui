@@ -3,6 +3,8 @@
         <v-toolbar flat>
             <v-btn icon="mdi-arrow-left" :to="{name: 'items', params: {table}}"/>
             <v-toolbar-title>Item {{ id }}</v-toolbar-title>
+            <v-spacer />
+            <v-btn @click="deleteItem()" icon="mdi-delete" color="error"/>
         </v-toolbar>
         <v-card-text v-if="item">
             <v-row v-for="field in fields" :key="field.name">
@@ -19,11 +21,12 @@
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { ref, onMounted, inject, computed } from 'vue';
 
 const axios = inject('axios')  // inject axios
 const route = useRoute()
+const router = useRouter()
 
 const item = ref(null)
 const loading = ref(false)
@@ -58,6 +61,18 @@ const getModel = async () => {
     } catch (error) {
         console.error(error)
     } 
+}
+
+const deleteItem = async () => {
+    if(!confirm(`Delete ${table.value} ${id.value}?`)) return
+    try {
+        const route = `/${table.value}/${id.value}`
+        await axios.delete(route)
+        router.push({name: 'items', param: {table: table.value}})
+        
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 
