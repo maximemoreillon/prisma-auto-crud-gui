@@ -11,7 +11,15 @@
             <v-table >
                 <thead>
                     <tr>
-                        <th v-for="field in fields" :key="`header_${field.name}`">{{field.name}}</th>
+                        <!-- TODO: do not show objects or arrays -->
+                        <th v-for="field in fields" :key="`header_${field.name}`">
+                            <v-btn 
+                                variant="text" 
+                                class="text-capitalize"
+                                :append-icon="headerButtonIcon(field)"
+                                @click="headerButtonClicked(field)"
+                                >{{field.name}}</v-btn>
+                        </th>
                         <th class="text-left">See</th>
                     </tr>
                 </thead>
@@ -35,38 +43,75 @@
 
 import NewItemDialog from '@/components/NewItemDialog.vue'
 
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { ref, onMounted, inject, computed, watch } from 'vue';
 
 
 const axios = inject('axios')  // inject axios
 const route = useRoute()
+const router = useRouter()
 
-const page = ref(1)
-const pageSize = ref(3)
+const pageSize = ref(5)
 
 const total = ref(0)
 const items = ref([])
 const fields = ref([])
 const loading = ref(false)
 const table = computed(() => route.params.table)
+const query = computed(() => route.query)
+
+// Overly complicated and needs to be done for every parameter
+const page = computed({
+    get(){
+        const { skip = 0 } = query.value
+        return (Number(skip) / Number(pageSize.value)) + 1
+    },
+    set(newVal){
+        updateQuery({ skip: String((newVal - 1) * pageSize.value) })
+    },
+})
+
+const sort = computed({
+    get() {
+        return query.value.sort || 'id'
+    },
+    set(newVal) {
+        updateQuery({ sort: newVal })        
+    },
+})
+
+const order = computed({
+    get() {
+        return query.value.order || 'desc'
+    },
+    set(newVal) {
+        updateQuery({ order: newVal })
+    },
+})
+
+const updateQuery = (newItem) => {
+    const query = { ...route.query, ...newItem }
+    // Preventing route duplicates
+    if (JSON.stringify(route.query) !== JSON.stringify(query)) router.push({ query })
+}
+
+
 
 onMounted(() => {
     getFields()
-    getitems()
+    getItems()
 })
 
-// TODO: Link page to URL query parameters
-watch(page, () =>{
-    getitems()
+
+watch(query, () => {
+    getItems()
 })
 
-const getitems = async () => {
+const getItems = async () => {
     loading.value = true
     try {
         const route = `/${table.value}`
-        const params = { take: pageSize.value, skip: (page.value - 1) * pageSize.value }
-
+        const params = { ...query.value, take: pageSize.value}
         const { data } = await axios.get(route, { params })
 
         items.value = data.items
@@ -86,6 +131,24 @@ const getFields = async () => {
         fields.value = data.fields
     } catch (error) {
         console.error(error)
+    }
+}
+
+const headerButtonIcon = (field) => {
+    if (sort.value === field.name) {
+        if (order.value === 'desc') return 'mdi-arrow-up'
+        else return 'mdi-arrow-down'
+    }
+    else return undefined
+}
+
+const headerButtonClicked = (field) => {
+    if (sort.value === field.name) {
+        if (order.value === 'desc') order.value = 'asc'
+        else order.value = 'desc'
+    }
+    else {
+        sort.value = field.name
     }
 }
 
