@@ -34,7 +34,15 @@
                     </tr>
                 </tbody>
             </v-table>
-            <v-pagination v-model="page" :length="Math.ceil(total/pageSize)"></v-pagination>
+            <v-row>
+                <v-col>
+                    <v-pagination v-model="page" :length="Math.ceil(total/take)"></v-pagination>
+                </v-col>
+                <v-col cols="auto">
+                    <v-select :items="[5, 10, 50]" prefix="Items per page: " v-model="take" ></v-select>
+                </v-col>
+            </v-row>
+            
         </v-card-text>
     </v-card>
 </template>
@@ -51,8 +59,6 @@ const axios = inject('axios')  // inject axios
 const route = useRoute()
 const router = useRouter()
 
-const pageSize = ref(5)
-
 const total = ref(0)
 const items = ref([])
 const fields = ref([])
@@ -64,10 +70,20 @@ const query = computed(() => route.query)
 const page = computed({
     get(){
         const { skip = 0 } = query.value
-        return (Number(skip) / Number(pageSize.value)) + 1
+        return (Number(skip) / Number(take.value)) + 1
     },
     set(newVal){
-        updateQuery({ skip: String((newVal - 1) * pageSize.value) })
+        updateQuery({ skip: String((newVal - 1) * take.value) })
+    },
+})
+
+const take = computed({
+    get() {
+        const { take = 10 } = query.value
+        return Number(take)
+    },
+    set(newVal) {
+        updateQuery({ take: newVal })
     },
 })
 
@@ -111,7 +127,7 @@ const getItems = async () => {
     loading.value = true
     try {
         const route = `/${table.value}`
-        const params = { ...query.value, take: pageSize.value}
+        const params = { ...query.value }
         const { data } = await axios.get(route, { params })
 
         items.value = data.items
