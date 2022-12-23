@@ -12,20 +12,21 @@
                 <thead>
                     <tr>
                         <!-- TODO: do not show objects or arrays -->
-                        <th v-for="field in fields" :key="`header_${field.name}`">
+                        <th v-for="field in primitiveFields" :key="`header_${field.name}`">
                             <v-btn 
                                 variant="text" 
                                 class="text-capitalize"
                                 :append-icon="headerButtonIcon(field)"
-                                @click="headerButtonClicked(field)"
-                                >{{field.name}}</v-btn>
+                                @click="headerButtonClicked(field)">
+                                {{field.name}}
+                            </v-btn>
                         </th>
                         <th class="text-left">See</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item in items" :key="item.id">
-                        <td v-for="field in fields" :key="`item_${item.id}_${field.name}`">
+                        <td v-for="field in primitiveFields" :key="`item_${item.id}_${field.name}`">
                             {{ item[field.name] }}
                         </td>
                         <td>
@@ -67,6 +68,7 @@ const table = computed(() => route.params.table)
 const query = computed(() => route.query)
 
 // Overly complicated and needs to be done for every parameter
+// Will be simplified when Vuetify 3 releases data-tables
 const page = computed({
     get(){
         const { skip = 0 } = query.value
@@ -111,6 +113,12 @@ const updateQuery = (newItem) => {
     if (JSON.stringify(route.query) !== JSON.stringify(query)) router.push({ query })
 }
 
+
+const primitiveFields = computed( () => {
+    return fields.value.filter(({ kind }) => {
+        return !['object'].includes(kind)
+    })
+})
 
 
 onMounted(() => {
