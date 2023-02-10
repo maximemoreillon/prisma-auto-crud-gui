@@ -5,25 +5,28 @@
  */
 
 // Components
-import App from './App.vue'
-import router from './router'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
+import App from "./App.vue";
+import router from "./router";
+import axios from "axios";
+import VueAxios from "vue-axios";
+import { init } from "./autoCrud";
+
+init(router);
 
 // Composables
-import { createApp } from 'vue'
+import { createApp } from "vue";
 
 // Plugins
-import { registerPlugins } from '@/plugins'
+import { registerPlugins } from "@/plugins";
 
-const app = createApp(App)
+const app = createApp(App);
 
-registerPlugins(app)
+registerPlugins(app);
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 app
-    .use(router)
-    .use(VueAxios, axios)
-    .provide('axios', app.config.globalProperties.axios)  // provide 'axios'
-    .mount('#app')
+  .use(router)
+  .use(VueAxios, axios)
+  .provide("axios", app.config.globalProperties.axios) // provide 'axios'
+  .mount("#app");
