@@ -1,11 +1,5 @@
 # Prisma Auto CRUD GUI
 
-## To do
-
-* [ ] Item creation
-* [ ] Item deletion
-* [ ] Item update
-
 ## Project setup
 
 ```

@@ -35,7 +35,7 @@ export default defineConfig({
       entry: resolve(__dirname, "src/main.js"),
       name: "AppTemplate",
       // the proper extensions will be added
-      fileName: "vuetify3-application-template",
+      fileName: "prisma-auto-crud-gui",
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled

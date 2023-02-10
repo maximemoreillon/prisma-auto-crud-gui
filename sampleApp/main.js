@@ -5,7 +5,7 @@ import VueAxios from "vue-axios";
 import { createApp } from "vue";
 import { registerPlugins } from "./plugins";
 
-import { init } from "../src/autoCrud";
+import { init } from "../src/";
 init(router);
 
 const app = createApp(App);
