@@ -20,9 +20,11 @@
           </v-col>
         </v-row>
       </v-card-text>
+
       <!-- Foreign keys linking to other items -->
       <!-- TODO: refactor because Not very nice -->
       <!-- Not sure why an array -->
+      <!-- TODO: find nice way to display -->
       <v-card-text>
         <v-row v-for="field in fieldsWithForeignKeys" :key="field.name">
           <v-col cols="auto">
@@ -61,6 +63,7 @@
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, inject, computed, reactive, watch } from "vue";
 import RelateditemsTable from "@/components/RelateditemsTable.vue";
+
 const axios = inject("axios"); // inject axios
 const route = useRoute();
 const router = useRouter();

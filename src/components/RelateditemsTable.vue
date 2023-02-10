@@ -30,12 +30,9 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from "vue-router";
-
-import { ref, onMounted, inject, computed, reactive, watch } from "vue";
+import { ref, onMounted, inject, computed } from "vue";
 const axios = inject("axios"); // inject axios
-const route = useRoute();
-const router = useRouter();
+
 const props = defineProps({
   items: Object,
   table: String,
