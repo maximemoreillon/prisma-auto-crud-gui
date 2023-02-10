@@ -1,44 +1,23 @@
 # Prisma Auto CRUD GUI
 
-## Project setup
+A Vue module built with Vuetify to automatically create views for each table managed by the [Prisma Auto CRU middleware](https://github.com/maximemoreillon/prisma-auto-crud)
+
+## Usage
+
+This module is to be imported in main.js and takes the vue Router as argument
 
 ```
-# yarn
-yarn
+import App from "./App.vue";
+import router from "./router";
+import { createApp } from "vue";
 
-# npm
-npm install
+import { init } from "../src/";
+init(router);
 
-# pnpm
-pnpm install
-```
+const app = createApp(App);
 
-### Compiles and hot-reloads for development
-
-```
-# yarn
-yarn dev
-
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-```
-
-### Compiles and minifies for production
+app
+  .use(router)
+  .mount("#app");
 
 ```
-# yarn
-yarn build
-
-# npm
-npm run build
-
-# pnpm
-pnpm build
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://vitejs.dev/config/).
