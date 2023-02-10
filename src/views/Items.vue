@@ -18,6 +18,7 @@
                 :append-icon="headerButtonIcon(field)"
                 @click="headerButtonClicked(field)"
               >
+                {{ field.name }}
               </v-btn>
             </th>
             <th class="text-left">See</th>
@@ -41,6 +42,7 @@
           </tr>
         </tbody>
       </v-table>
+      <!-- TODO: make a pagination component -->
       <v-row>
         <v-col>
           <v-pagination
@@ -79,6 +81,7 @@ const query = computed(() => route.query);
 
 // Overly complicated and needs to be done for every parameter
 // Will be simplified when Vuetify 3 releases data-tables
+// TODO: make a pagination component
 const page = computed({
   get() {
     const { skip = 0 } = query.value;
@@ -90,6 +93,7 @@ const page = computed({
 });
 
 const take = computed({
+  // PROBLEM: does not get set by default
   get() {
     const { take = 10 } = query.value;
     return Number(take);
@@ -125,8 +129,8 @@ const updateQuery = (newItem) => {
 };
 
 const primitiveFields = computed(() =>
-  // TODO: consider using type Scalar
-  fields.value.filter(({ kind }) => !["object"].includes(kind))
+  // TODO: consider field.type otherwise
+  fields.value.filter(({ kind }) => kind === "scalar")
 );
 
 onMounted(() => {

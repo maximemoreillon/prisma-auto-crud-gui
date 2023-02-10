@@ -1,8 +1,21 @@
 {
   "name": "prisma-auto-crud-gui",
   "version": "0.0.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/prisma-auto-crud-gui.umd.cjs",
+  "module": "./dist/prisma-auto-crud-gui.js",
+  "exports": {
+    ".": {
+      "import": "./dist/prisma-auto-crud-gui.js",
+      "require": "./dist/prisma-auto-crud-gui.umd.js"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
   "scripts": {
-    "dev": "vite --host --port 8080",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },

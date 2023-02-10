@@ -13,40 +13,23 @@
       />
     </v-toolbar>
     <template v-if="item">
+      <!-- Properties of the item itself -->
+      <!-- TODO: don't show foreign keys -->
       <v-card-text>
-        <v-row v-for="field in primitiveFields" :key="field.name">
+        <v-row v-for="{ name } in primitiveFields" :key="name">
           <v-col>
-            <v-text-field :label="field.name" v-model="item[field.name]" />
+            <v-text-field :label="name" v-model="item[name]" />
           </v-col>
         </v-row>
       </v-card-text>
 
-      <!-- Foreign keys linking to other items -->
-      <!-- TODO: refactor because Not very nice -->
-      <!-- Not sure why an array -->
-      <!-- TODO: find nice way to display -->
-      <v-card-text>
-        <v-row v-for="field in fieldsWithForeignKeys" :key="field.name">
-          <v-col cols="auto">
-            {{ field.type }}
-          </v-col>
-          <v-col>
-            <!-- Why 0? Why does it need to be an array? -->
-            <router-link
-              :to="`/${field.type}/${item[field.relationFromFields[0]]}`"
-            >
-              {{ item[field.relationFromFields[0]] }}
-            </router-link>
-          </v-col>
-        </v-row>
+      <!-- Related items -->
+      <v-card-text v-for="{ name } in fieldsWithForeignKeys" :key="name">
+        <Relateditem :table="name" :item="item[name]" />
       </v-card-text>
-      <!-- TODO: items that have this one as foreign key should be in a table here -->
-      <!-- This would be achieved using include in the back-end-->
-      <!-- TODO: componentify -->
-      <v-card-text>
-        <div v-for="{ name } in fieldsFromOtherTables" :key="name">
-          <RelateditemsTable :items="item[name]" :table="name" />
-        </div>
+
+      <v-card-text v-for="{ name } in fieldsFromOtherTables" :key="name">
+        <RelatedItemsTable :items="item[name]" :table="name" />
       </v-card-text>
     </template>
   </v-card>
@@ -62,7 +45,8 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, inject, computed, reactive, watch } from "vue";
-import RelateditemsTable from "@/components/RelateditemsTable.vue";
+import RelatedItemsTable from "../components/RelatedItemsTable.vue";
+import Relateditem from "../components/RelatedItem.vue";
 
 const axios = inject("axios"); // inject axios
 const route = useRoute();
@@ -92,6 +76,7 @@ watch(table, async () => {
 });
 
 const getitem = async () => {
+  item.value = null;
   loading.value = true;
   try {
     const route = `/${table.value}/${id.value}`;

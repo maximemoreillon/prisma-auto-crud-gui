@@ -1,5 +1,5 @@
-import Items from "@/views/Items.vue";
-import Item from "@/views/Item.vue";
+import Items from "./views/Items.vue";
+import Item from "./views/Item.vue";
 
 export const init = (router) => {
   router.addRoute({ name: "items", path: "/:table/", component: Items });
