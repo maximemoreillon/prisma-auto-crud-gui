@@ -1,5 +1,5 @@
 {
-  "name": "@moreillon/prisma-auto-crud-gui",
+  "name": "@moreillon/prisma-auto-crud-vuetify",
   "version": "0.0.1",
   "type": "module",
   "files": [
