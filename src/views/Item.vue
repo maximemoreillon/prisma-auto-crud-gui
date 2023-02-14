@@ -22,7 +22,10 @@
       </v-card-text>
 
       <v-card-text>
-        <v-row v-for="{ name } in primitiveFields" :key="name">
+        <v-row
+          v-for="{ name } in primitiveFieldsWithoutForeignKeys"
+          :key="name"
+        >
           <v-col>
             <v-text-field :label="name" v-model="item[name]" />
           </v-col>
@@ -171,10 +174,13 @@ const deleteItem = async () => {
 const primitiveFields = computed(() =>
   fields.value.filter(
     // TODO: consider field.type otherwise
-    (field) =>
-      field.name !== "id" &&
-      field.kind == "scalar" &&
-      !foreignKeys.value.includes(field.name)
+    (field) => field.name !== "id" && field.kind == "scalar"
+  )
+);
+
+const primitiveFieldsWithoutForeignKeys = computed(() =>
+  primitiveFields.value.filter(
+    (field) => !foreignKeys.value.includes(field.name)
   )
 );
 
