@@ -5,6 +5,7 @@
         {{ table }}
       </v-toolbar-title>
       <v-spacer />
+      <v-btn :to="`/${table}/${item.id}`" icon="mdi-eye" v-if="item" />
       <SetItemDialog :table="props.table" @selection="itemSelected($event)" />
       <v-btn
         @click="emit('delete')"
@@ -20,14 +21,6 @@
         </v-col>
         <v-col>
           {{ item[name] }}
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-spacer />
-        <v-col cols="auto">
-          <v-btn :to="`/${table}/${item.id}`" prepend-icon="mdi-eye"
-            >See item</v-btn
-          >
         </v-col>
       </v-row>
     </v-card-text>

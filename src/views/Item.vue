@@ -16,6 +16,11 @@
     <template v-if="item">
       <!-- Properties of the item itself -->
       <!-- TODO: don't show foreign keys -->
+
+      <v-card-text>
+        <h3>{{ table }} {{ id }} properties (excluding ID and foreign keys)</h3>
+      </v-card-text>
+
       <v-card-text>
         <v-row v-for="{ name } in primitiveFields" :key="name">
           <v-col>
@@ -28,7 +33,7 @@
       <!-- Foreign keys -->
 
       <v-card-text>
-        <h3>Foreign keys</h3>
+        <h3>Foreign keys: {{ foreignKeys.join(", ") }}</h3>
       </v-card-text>
       <v-card-text
         v-for="{ name, relationFromFields } in fieldsWithForeignKeys"
@@ -44,10 +49,20 @@
       <v-card-text v-if="!fieldsWithForeignKeys.length"> None </v-card-text>
 
       <v-card-text>
-        <h3>Current item is foreign key of those:</h3>
+        <h3>
+          Current item is foreign key of those:
+          {{ fieldsFromOtherTables.map(({ name }) => name).join(",") }}
+        </h3>
       </v-card-text>
-      <v-card-text v-for="{ name } in fieldsFromOtherTables" :key="name">
-        <RelatedItemsTable :items="item[name]" :table="name" />
+      <v-card-text
+        v-for="{ name, ...rest } in fieldsFromOtherTables"
+        :key="name"
+      >
+        <RelatedItemsTable
+          :items="item[name]"
+          :table="name"
+          :currentTable="table"
+        />
       </v-card-text>
       <v-card-text v-if="!fieldsWithForeignKeys.length"> None </v-card-text>
     </template>
@@ -156,8 +171,10 @@ const deleteItem = async () => {
 const primitiveFields = computed(() =>
   fields.value.filter(
     // TODO: consider field.type otherwise
-    (field) => field.name !== "id" && field.kind == "scalar"
-    // && !foreignKeys.value.includes(field.name)
+    (field) =>
+      field.name !== "id" &&
+      field.kind == "scalar" &&
+      !foreignKeys.value.includes(field.name)
   )
 );
 
@@ -176,16 +193,16 @@ const fieldsToInclude = computed(() =>
 const fieldsFromOtherTables = computed(() =>
   fields.value.filter(
     // TODO: totally not sure whether this is correct
-    // NOTE: also relationToFields
+    // NOTE: there is also relationToFields. Figure out which one to use
     (field) => field.relationFromFields && !field.relationFromFields.length
   )
 );
 
-const foreignKeys = computed(() => {
-  return fieldsWithForeignKeys.value.map(({ relationFromFields }) => {
-    return relationFromFields[0];
-  });
-});
+const foreignKeys = computed(() =>
+  fieldsWithForeignKeys.value.map(
+    ({ relationFromFields }) => relationFromFields[0]
+  )
+);
 
 const updateRelatedItem = async (key, value) => {
   item.value[key] = value;

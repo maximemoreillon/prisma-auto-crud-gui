@@ -4,7 +4,7 @@
       <v-table>
         <thead>
           <tr>
-            <th v-for="field in primitiveFields" :key="`header_${field.name}`">
+            <th v-for="field in fieldsToShow" :key="`header_${field.name}`">
               {{ field.name }}
             </th>
             <th class="text-left">See</th>
@@ -13,7 +13,7 @@
         <tbody>
           <tr v-for="item in items" :key="item.id">
             <td
-              v-for="field in primitiveFields"
+              v-for="field in fieldsToShow"
               :key="`item_${item.id}_${field.name}`"
             >
               {{ item[field.name] }}
@@ -39,6 +39,7 @@ import { axios } from "../main";
 const props = defineProps({
   items: Object,
   table: String,
+  currentTable: { type: String, default: "" },
 });
 
 const fields = ref([]);
@@ -57,9 +58,27 @@ const getFields = async () => {
   }
 };
 
-// TODO: remove field corresponding to parent
-// Ex. if shown from customer, don't show customer_id
+// TODO: simplify the following computeds
 const primitiveFields = computed(() =>
   fields.value.filter(({ kind }) => !["object"].includes(kind))
+);
+
+const fieldsToOtherTables = computed(() =>
+  fields.value.filter(
+    // TODO: totally not sure whether this is correct
+    // NOTE: there is also relationToFields. Figure out which one to use
+    (field) => field.relationToFields
+  )
+);
+
+const fieldsToHide = computed(() =>
+  fieldsToOtherTables.value.filter((f) => f.name === props.currentTable)
+);
+
+const fieldsToShow = computed(() =>
+  primitiveFields.value.filter(
+    ({ name }) =>
+      !fieldsToHide.value.map((f) => f.relationFromFields[0]).includes(name)
+  )
 );
 </script>
