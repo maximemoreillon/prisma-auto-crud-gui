@@ -1,5 +1,5 @@
 <template>
-  <v-card :title="`${table}s`" variant="outlined">
+  <v-card :title="table" variant="outlined">
     <v-card-text>
       <v-table>
         <thead>
@@ -33,8 +33,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject, computed } from "vue";
-const axios = inject("axios"); // inject axios
+import { ref, onMounted, computed } from "vue";
+import { axios } from "../main";
 
 const props = defineProps({
   items: Object,

@@ -1,6 +1,19 @@
 <template>
-  <v-card :title="table" variant="outlined" :to="`/${table}/${item?.id}`">
-    <v-card-text>
+  <v-card variant="outlined">
+    <v-toolbar>
+      <v-toolbar-title>
+        {{ table }}
+      </v-toolbar-title>
+      <v-spacer />
+      <SetItemDialog :table="props.table" @selection="itemSelected($event)" />
+      <v-btn
+        @click="emit('delete')"
+        icon="mdi-delete"
+        color="#c00000"
+        v-if="item"
+      />
+    </v-toolbar>
+    <v-card-text v-if="item">
       <v-row v-for="{ name } in primitiveFields" :key="name">
         <v-col cols="">
           {{ name }}
@@ -9,18 +22,30 @@
           {{ item[name] }}
         </v-col>
       </v-row>
+      <v-row>
+        <v-spacer />
+        <v-col cols="auto">
+          <v-btn :to="`/${table}/${item.id}`" prepend-icon="mdi-eye"
+            >See item</v-btn
+          >
+        </v-col>
+      </v-row>
     </v-card-text>
+    <v-card-text v-else> Undefined </v-card-text>
   </v-card>
 </template>
 
 <script setup>
-import { ref, onMounted, inject, computed } from "vue";
-const axios = inject("axios"); // inject axios
+import { ref, onMounted, computed } from "vue";
+import { axios } from "../main";
+import SetItemDialog from "./SetItemDialog.vue";
 
 const props = defineProps({
   item: Object,
   table: String,
 });
+
+const emit = defineEmits(["update", "delete"]);
 
 const fields = ref([]);
 
@@ -44,4 +69,8 @@ const primitiveFields = computed(() =>
     (field) => field.name !== "id" && field.kind == "scalar"
   )
 );
+
+const itemSelected = (event) => {
+  emit("update", event);
+};
 </script>

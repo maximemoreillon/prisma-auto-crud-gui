@@ -1,7 +1,7 @@
 <template>
   <v-card :loading="loading">
     <v-toolbar flat>
-      <v-btn icon="mdi-arrow-left" :to="{ name: 'home' }" />
+      <v-btn icon="mdi-arrow-left" :to="{ name: 'tables' }" />
       <v-toolbar-title>{{ table }}</v-toolbar-title>
       <v-spacer />
       <NewItemDialog />
@@ -42,35 +42,27 @@
           </tr>
         </tbody>
       </v-table>
-      <!-- TODO: make a pagination component -->
-      <v-row>
-        <v-col>
-          <v-pagination
-            v-model="page"
-            :length="Math.ceil(total / take)"
-          ></v-pagination>
-        </v-col>
-        <v-col cols="auto">
-          <v-select
-            :items="[5, 10, 50]"
-            prefix="Items per page: "
-            v-model="take"
-          ></v-select>
-        </v-col>
-      </v-row>
+      <TablePagination :total="total" />
     </v-card-text>
   </v-card>
 </template>
 
 <script setup>
 import NewItemDialog from "@/components/NewItemDialog.vue";
-
+import TablePagination from "@/components/TablePagination.vue";
 import { useRoute, useRouter } from "vue-router";
-import { ref, onMounted, inject, computed, watch } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
+import { axios } from "../main";
 
-const axios = inject("axios"); // inject axios
 const route = useRoute();
 const router = useRouter();
+
+const updateQuery = (newItem) => {
+  const query = { ...route.query, ...newItem };
+  // Preventing route duplicates
+  if (JSON.stringify(route.query) !== JSON.stringify(query))
+    router.push({ query });
+};
 
 const total = ref(0);
 const items = ref([]);
@@ -81,27 +73,6 @@ const query = computed(() => route.query);
 
 // Overly complicated and needs to be done for every parameter
 // Will be simplified when Vuetify 3 releases data-tables
-// TODO: make a pagination component
-const page = computed({
-  get() {
-    const { skip = 0 } = query.value;
-    return Number(skip) / Number(take.value) + 1;
-  },
-  set(newVal) {
-    updateQuery({ skip: String((newVal - 1) * take.value) });
-  },
-});
-
-const take = computed({
-  // PROBLEM: does not get set by default
-  get() {
-    const { take = 10 } = query.value;
-    return Number(take);
-  },
-  set(newVal) {
-    updateQuery({ take: newVal });
-  },
-});
 
 const sort = computed({
   get() {
@@ -120,13 +91,6 @@ const order = computed({
     updateQuery({ order: newVal });
   },
 });
-
-const updateQuery = (newItem) => {
-  const query = { ...route.query, ...newItem };
-  // Preventing route duplicates
-  if (JSON.stringify(route.query) !== JSON.stringify(query))
-    router.push({ query });
-};
 
 const primitiveFields = computed(() =>
   // TODO: consider field.type otherwise

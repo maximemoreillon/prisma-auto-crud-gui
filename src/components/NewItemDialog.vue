@@ -33,10 +33,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject, computed, reactive } from "vue";
+import { ref, onMounted, computed, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-const axios = inject("axios"); // inject axios
+import { axios } from "../main";
+
 const route = useRoute();
 const router = useRouter();
 

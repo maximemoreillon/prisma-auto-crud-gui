@@ -5,6 +5,7 @@
       <v-toolbar-title>{{ table }} {{ id }}</v-toolbar-title>
       <v-spacer />
       <v-btn @click="updateItem" icon="mdi-content-save" :loading="updating" />
+
       <v-btn
         @click="deleteItem()"
         icon="mdi-delete"
@@ -24,13 +25,31 @@
       </v-card-text>
 
       <!-- Related items -->
-      <v-card-text v-for="{ name } in fieldsWithForeignKeys" :key="name">
-        <Relateditem :table="name" :item="item[name]" />
-      </v-card-text>
+      <!-- Foreign keys -->
 
+      <v-card-text>
+        <h3>Foreign keys</h3>
+      </v-card-text>
+      <v-card-text
+        v-for="{ name, relationFromFields } in fieldsWithForeignKeys"
+        :key="name"
+      >
+        <Relateditem
+          :table="name"
+          :item="item[name]"
+          @delete="updateRelatedItem(relationFromFields[0], null)"
+          @update="updateRelatedItem(relationFromFields[0], $event)"
+        />
+      </v-card-text>
+      <v-card-text v-if="!fieldsWithForeignKeys.length"> None </v-card-text>
+
+      <v-card-text>
+        <h3>Current item is foreign key of those:</h3>
+      </v-card-text>
       <v-card-text v-for="{ name } in fieldsFromOtherTables" :key="name">
         <RelatedItemsTable :items="item[name]" :table="name" />
       </v-card-text>
+      <v-card-text v-if="!fieldsWithForeignKeys.length"> None </v-card-text>
     </template>
   </v-card>
 
@@ -44,11 +63,11 @@
 
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { ref, onMounted, inject, computed, reactive, watch } from "vue";
+import { ref, onMounted, computed, reactive, watch } from "vue";
 import RelatedItemsTable from "../components/RelatedItemsTable.vue";
 import Relateditem from "../components/RelatedItem.vue";
+import { axios } from "../main";
 
-const axios = inject("axios"); // inject axios
 const route = useRoute();
 const router = useRouter();
 
@@ -67,15 +86,15 @@ const snackbar = reactive({
 
 onMounted(async () => {
   await getModel();
-  await getitem();
+  await getItem();
 });
 
 watch(table, async () => {
   await getModel();
-  await getitem();
+  await getItem();
 });
 
-const getitem = async () => {
+const getItem = async () => {
   item.value = null;
   loading.value = true;
   try {
@@ -104,7 +123,13 @@ const updateItem = async () => {
   updating.value = true;
   try {
     const route = `/${table.value}/${id.value}`;
-    await axios.put(route, item.value);
+
+    const body = primitiveFields.value.reduce(
+      (prev, { name }) => ({ ...prev, [name]: item.value[name] }),
+      {}
+    );
+
+    await axios.put(route, body);
     snackbar.show = true;
     snackbar.text = `${table.value} ${id.value} updated`;
   } catch (error) {
@@ -132,6 +157,7 @@ const primitiveFields = computed(() =>
   fields.value.filter(
     // TODO: consider field.type otherwise
     (field) => field.name !== "id" && field.kind == "scalar"
+    // && !foreignKeys.value.includes(field.name)
   )
 );
 
@@ -154,4 +180,16 @@ const fieldsFromOtherTables = computed(() =>
     (field) => field.relationFromFields && !field.relationFromFields.length
   )
 );
+
+const foreignKeys = computed(() => {
+  return fieldsWithForeignKeys.value.map(({ relationFromFields }) => {
+    return relationFromFields[0];
+  });
+});
+
+const updateRelatedItem = async (key, value) => {
+  item.value[key] = value;
+  await updateItem();
+  getItem();
+};
 </script>

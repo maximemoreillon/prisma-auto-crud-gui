@@ -1,5 +1,6 @@
 stages:
   - publish
+  - containerize
 
 publish:
   image: node:16
@@ -13,3 +14,10 @@ publish:
     # Auth and publish to NPM
     - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
     - npm publish --access=public
+
+containerize:
+  stage: containerize
+  tags:
+    - moreillon
+  script:
+    - echo "Not implemented"
