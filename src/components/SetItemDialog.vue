@@ -1,3 +1,5 @@
+<!-- TODO: Pagination, sorting, ordering, search -->
+
 <template>
   <v-dialog v-model="dialog" max-width="60rem">
     <template v-slot:activator="{ props }">

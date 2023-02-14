@@ -4,7 +4,7 @@ A Vue module built with Vuetify to automatically create views for each table man
 
 ## TODO:
 
-- [ ] Axios straight from package, but have way to set base_url
+- [x] Axios straight from package, but have way to set base_url
 
 ## Usage
 
@@ -15,8 +15,9 @@ import App from "./App.vue";
 import router from "./router";
 import { createApp } from "vue";
 
-import { init } from "../src/";
-init(router);
+import { init } from "@moreillon/prisma-auto-crud-vuetify";
+const apiUrl = 'http://yourapiurl';
+init({router, apiUrl});
 
 const app = createApp(App);
 

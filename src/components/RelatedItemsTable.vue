@@ -1,3 +1,5 @@
+<!-- TODO: Pagination, sorting, ordering, search -->
+<!-- TODO: allow deletion of related item -->
 <template>
   <v-card :title="table" variant="outlined">
     <v-card-text>
