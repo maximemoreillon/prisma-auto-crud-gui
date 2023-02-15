@@ -2,9 +2,16 @@ stages:
   - publish
   - containerize
 
+variables:
+  APPLICATION_NAME: prisma-auto-crud-gui
+  CONTAINER_IMAGE: ${DOCKER_HUB_USERNAME}/${APPLICATION_NAME}
+  CONTAINER_IMAGE_TAGGED: ${CONTAINER_IMAGE}:${GIT_COMMIT_SHORT_SHA}
+
 publish:
   image: node:16
   stage: publish
+  only:
+    - master
   tags:
     - moreillon
   script:
@@ -16,8 +23,18 @@ publish:
     - npm publish --access=public
 
 containerize:
+  image: moreillon/ci-dind
+  services:
+    - name: docker:19.03.12-dind
   stage: containerize
+  only:
+    - master
   tags:
-    - moreillon
+    - dind
+  before_script:
+    - echo "${DOCKER_HUB_PASSWORD}" | docker login --username ${DOCKER_HUB_USERNAME} --password-stdin;
   script:
-    - echo "Not implemented"
+    - docker build -t ${CONTAINER_IMAGE} ./docker/
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_TAGGED}
+    - docker push ${CONTAINER_IMAGE}
+    - docker push ${CONTAINER_IMAGE_TAGGED}

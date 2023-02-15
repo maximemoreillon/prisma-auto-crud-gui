@@ -57,17 +57,14 @@
           {{ fieldsFromOtherTables.map(({ name }) => name).join(",") }}
         </h3>
       </v-card-text>
-      <v-card-text
-        v-for="{ name, ...rest } in fieldsFromOtherTables"
-        :key="name"
-      >
+      <v-card-text v-for="{ name } in fieldsFromOtherTables" :key="name">
         <RelatedItemsTable
           :items="item[name]"
           :table="name"
           :currentTable="table"
         />
       </v-card-text>
-      <v-card-text v-if="!fieldsWithForeignKeys.length"> None </v-card-text>
+      <v-card-text v-if="!fieldsFromOtherTables.length"> None </v-card-text>
     </template>
   </v-card>
 

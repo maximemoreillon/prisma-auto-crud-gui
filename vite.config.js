@@ -13,9 +13,9 @@ export default defineConfig({
   plugins: [
     vue(),
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
-    // vuetify({
-    //   autoImport: true,
-    // }),
+    vuetify({
+      autoImport: true,
+    }),
   ],
   define: { "process.env": {} },
   resolve: {
@@ -44,21 +44,7 @@ export default defineConfig({
         "vue-router", // adding vue-router solved the injection errors
 
         // THIS WAS THE SOURCE OF ALL MY PAIN
-        // NEED TO IMPORT ALL COMPONENTS USED IN THE PLUGIN LIKE THAT
-        "vuetify/components/VCard",
-        "vuetify/components/VList",
-        "vuetify/components/VTable",
-        "vuetify/components/VBtn",
-        "vuetify/components/VSelect",
-        "vuetify/components/VToolbar",
-        "vuetify/components/VPagination",
-        "vuetify/components/VGrid",
-        "vuetify/components/VDialog",
-        "vuetify/components/VForm",
-        "vuetify/components/VBtn",
-        "vuetify/components/VDivider",
-        "vuetify/components/VTextField",
-        "vuetify/components/VSnackbar",
+        /vuetify\/components\/*/,
       ],
       output: {
         // Provide global variables to use in the UMD build
