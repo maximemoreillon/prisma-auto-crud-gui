@@ -35,8 +35,12 @@
 </template>
 
 <script setup>
+import { VTable } from "vuetify/components/VTable";
+import { VCard, VCardText } from "vuetify/components/VCard";
+import { VBtn } from "vuetify/components/VBtn";
+
 import { ref, onMounted, computed } from "vue";
-import { axios } from "../main";
+import axios from "axios";
 
 const props = defineProps({
   items: Object,

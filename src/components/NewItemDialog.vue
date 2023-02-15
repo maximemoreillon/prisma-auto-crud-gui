@@ -33,10 +33,16 @@
 </template>
 
 <script setup>
+import { VRow, VCol, VSpacer } from "vuetify/components/VGrid";
+import { VCard, VCardText, VCardActions } from "vuetify/components/VCard";
+import { VForm } from "vuetify/components/VForm";
+import { VTextField } from "vuetify/components/VTextField";
+import { VDialog } from "vuetify/components/VDialog";
+import { VBtn } from "vuetify/components/VBtn";
+
 import { ref, onMounted, computed, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
-import { axios } from "../main";
+import axios from "axios";
 
 const route = useRoute();
 const router = useRouter();

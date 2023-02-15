@@ -29,9 +29,14 @@
 </template>
 
 <script setup>
+import { VRow, VCol, VSpacer } from "vuetify/components/VGrid";
+import { VCard, VCardText } from "vuetify/components/VCard";
+import { VToolbar, VToolbarTitle } from "vuetify/components/VToolbar";
+import { VBtn } from "vuetify/components/VBtn";
+
 import { ref, onMounted, computed } from "vue";
-import { axios } from "../main";
 import SetItemDialog from "./SetItemDialog.vue";
+import axios from "axios";
 
 const props = defineProps({
   item: Object,

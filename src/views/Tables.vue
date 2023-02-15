@@ -1,4 +1,5 @@
 <template>
+  <!-- PROBLEM: having vuetify stuff here makes the plugin unable to be loaded -->
   <v-card title="Tables" max-width="30rem" class="mx-auto">
     <v-card-text>
       <v-list lines="one">
@@ -7,15 +8,17 @@
           :key="table"
           :title="table"
           :to="{ name: 'items', params: { table } }"
-        ></v-list-item>
+        />
       </v-list>
     </v-card-text>
   </v-card>
 </template>
 
 <script setup>
+import { VCard, VCardText } from "vuetify/components/VCard";
+import { VList, VListItem } from "vuetify/components/VList";
 import { ref, onMounted } from "vue";
-import { axios } from "../main";
+import axios from "axios";
 
 const tables = ref([]);
 const loading = ref(false);

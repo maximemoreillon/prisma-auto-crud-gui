@@ -40,9 +40,13 @@
 </template>
 
 <script setup>
+import { VCard, VCardText } from "vuetify/components/VCard";
 import { ref, onMounted, computed } from "vue";
+import { VTable } from "vuetify/components/VTable";
+import { VDialog } from "vuetify/components/VDialog";
+import { VBtn } from "vuetify/components/VBtn";
 
-import { axios } from "../main";
+import axios from "axios";
 
 const total = ref(0);
 const items = ref([]);

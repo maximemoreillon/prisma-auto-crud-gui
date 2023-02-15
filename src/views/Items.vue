@@ -48,11 +48,19 @@
 </template>
 
 <script setup>
-import NewItemDialog from "@/components/NewItemDialog.vue";
-import TablePagination from "@/components/TablePagination.vue";
+import { VTable } from "vuetify/components/VTable";
+import { VCard, VCardText } from "vuetify/components/VCard";
+import { VDivider } from "vuetify/components/VDivider";
+import { VToolbar, VToolbarTitle } from "vuetify/components/VToolbar";
+import { VBtn } from "vuetify/components/VBtn";
+import { VSpacer } from "vuetify/components/VGrid";
+
+import NewItemDialog from "../components/NewItemDialog.vue";
+import TablePagination from "../components/TablePagination.vue";
+
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, computed, watch } from "vue";
-import { axios } from "../main";
+import axios from "axios";
 
 const route = useRoute();
 const router = useRouter();

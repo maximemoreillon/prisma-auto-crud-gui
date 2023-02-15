@@ -80,11 +80,19 @@
 </template>
 
 <script setup>
+import { VCard, VCardText } from "vuetify/components/VCard";
+import { VToolbar, VToolbarTitle } from "vuetify/components/VToolbar";
+import { VBtn } from "vuetify/components/VBtn";
+import { VSpacer } from "vuetify/components/VGrid";
+import { VTextField } from "vuetify/components/VTextField";
+import { VSnackbar } from "vuetify/components/VSnackbar";
+import { VRow, VCol } from "vuetify/components/VGrid";
+
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, computed, reactive, watch } from "vue";
 import RelatedItemsTable from "../components/RelatedItemsTable.vue";
 import Relateditem from "../components/RelatedItem.vue";
-import { axios } from "../main";
+import axios from "axios";
 
 const route = useRoute();
 const router = useRouter();

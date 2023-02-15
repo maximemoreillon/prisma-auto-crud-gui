@@ -1,22 +1,19 @@
 <template>
   <v-row>
     <v-col>
-      <v-pagination
-        v-model="page"
-        :length="Math.ceil(total / take)"
-      ></v-pagination>
+      <v-pagination v-model="page" :length="Math.ceil(total / take)" />
     </v-col>
     <v-col cols="auto">
-      <v-select
-        :items="[5, 10, 50]"
-        prefix="Items per page: "
-        v-model="take"
-      ></v-select>
+      <v-select :items="[5, 10, 50]" prefix="Items per page: " v-model="take" />
     </v-col>
   </v-row>
 </template>
 
 <script setup>
+import { VPagination } from "vuetify/components/VPagination";
+import { VSelect } from "vuetify/components/VSelect";
+import { VRow, VCol } from "vuetify/components/VGrid";
+
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
