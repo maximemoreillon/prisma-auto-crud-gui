@@ -8,11 +8,7 @@
 import { loadFonts } from "./webfontloader";
 import vuetify from "./vuetify";
 import router from "../router";
-
-// Adding prisma auto crud
 import prismaAutoCrudGui from "@moreillon/prisma-auto-crud-vuetify";
-// import prismaAutoCrudGui from "../../../src/main";
-// import "@moreillon/prisma-auto-crud-vuetify/dist/style.css";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 // WARNING: Order is important
