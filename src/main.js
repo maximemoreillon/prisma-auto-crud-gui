@@ -7,8 +7,6 @@ import axios from "axios";
 
 export default {
   install: (app, options) => {
-    console.log("Hello plugin");
-
     const { router, apiUrl } = options;
 
     axios.defaults.baseURL = apiUrl;

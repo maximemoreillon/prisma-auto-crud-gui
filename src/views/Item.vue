@@ -23,11 +23,18 @@
 
       <v-card-text>
         <v-row
-          v-for="{ name } in primitiveFieldsWithoutForeignKeys"
+          v-for="{ name, type } in primitiveFieldsWithoutForeignKeys"
           :key="name"
         >
           <v-col>
-            <v-text-field :label="name" v-model="item[name]" />
+            <v-text-field
+              v-if="['Int', 'Float'].includes(type)"
+              :label="name"
+              type="number"
+              v-model.number="item[name]"
+            />
+
+            <v-text-field v-else :label="name" v-model="item[name]" />
           </v-col>
         </v-row>
       </v-card-text>
@@ -157,6 +164,8 @@ const updateItem = async () => {
     snackbar.text = `${table.value} ${id.value} updated`;
   } catch (error) {
     console.error(error);
+    snackbar.show = true;
+    snackbar.text = `Update failed`;
   } finally {
     updating.value = false;
   }
@@ -171,6 +180,8 @@ const deleteItem = async () => {
     router.push({ name: "items", param: { table: table.value } });
   } catch (error) {
     console.error(error);
+    snackbar.show = true;
+    snackbar.text = `Deletion failed`;
   } finally {
     deleting.value = false;
   }
