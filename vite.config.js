@@ -55,8 +55,6 @@ export default defineConfig({
           // "vue-router": "VueRouter", // Does not seem to have any effect
         },
       },
-      // Added myself
-      plugins: [],
     },
   },
 });
