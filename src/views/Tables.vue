@@ -35,7 +35,7 @@ const getTables = async () => {
   } catch (error) {
     console.error(error);
   } finally {
-    loading.value = true;
+    loading.value = false;
   }
 };
 </script>

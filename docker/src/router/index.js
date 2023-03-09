@@ -1,11 +1,16 @@
 // Composables
 import { createRouter, createWebHistory } from "vue-router";
-
+import Restart from '@/views/Restart.vue'
 const routes = [
   {
     path: "",
-    name: "Home",
+    name: "tables",
     redirect: "/tables",
+  },
+  {
+    path: "/restart",
+    name: "restart",
+    component: Restart,
   },
 ];
 
