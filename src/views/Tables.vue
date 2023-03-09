@@ -1,5 +1,4 @@
 <template>
-  <!-- PROBLEM: having vuetify stuff here makes the plugin unable to be loaded -->
   <v-card title="Tables" max-width="30rem" class="mx-auto">
     <v-card-text>
       <v-list lines="one">

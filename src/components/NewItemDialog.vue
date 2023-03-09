@@ -8,15 +8,21 @@
       <v-form @submit.prevent="createItem()">
         <v-card-text>
           <v-row v-for="field in fields" :key="field.name">
-            <v-col
-              v-if="
-                field.name !== 'id' && ['String', 'Int'].includes(field.type)
-              "
-            >
+            <v-col v-if="field.name !== 'id'">
               <v-text-field
+                v-if="['Int', 'Float'].includes(field.type)"
+                :label="field.name"
+                type="number"
+                v-model.number="newitem[field.name]"
+              />
+              <v-text-field
+                v-else-if="['String'].includes(field.type)"
                 :label="field.name"
                 v-model="newitem[field.name]"
-              ></v-text-field>
+              />
+              <span v-else>
+                Type {{ field.type }} is not supported at the moment
+              </span>
             </v-col>
           </v-row>
         </v-card-text>
