@@ -20,12 +20,6 @@
           :title="table"
           :to="`/${table}`"
         />
-        <v-divider></v-divider>
-        <v-list-item
-          prepend-icon="mdi-restart"
-          title="Restart"
-          :to="{ name: 'restart' }"
-        />
       </v-list>
     </v-navigation-drawer>
 
