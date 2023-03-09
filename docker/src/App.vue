@@ -18,7 +18,7 @@
           :key="`table_${index}`"
           prepend-icon="mdi-format-list-bulleted"
           :title="table"
-          :to="`/${table}`"
+          :to="`/${table}/`"
         />
       </v-list>
     </v-navigation-drawer>
