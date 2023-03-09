@@ -110,6 +110,10 @@ onMounted(() => {
   getItems();
 });
 
+watch(table, () => {
+  getFields();
+  getItems();
+});
 watch(query, () => {
   getItems();
 });
