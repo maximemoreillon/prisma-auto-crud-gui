@@ -42,7 +42,6 @@ const options = ref({
   identification_url: VITE_IDENTIFICATION_URL,
 });
 
-const drawer = ref(false);
 const loading = ref(false);
 const tables = ref([]);
 

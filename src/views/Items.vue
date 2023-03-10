@@ -111,9 +111,11 @@ onMounted(() => {
 });
 
 watch(table, () => {
+  if (!table) return;
   getFields();
   getItems();
 });
+
 watch(query, () => {
   getItems();
 });
