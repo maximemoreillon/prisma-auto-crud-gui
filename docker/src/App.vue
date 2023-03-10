@@ -1,11 +1,6 @@
 <template>
-  <v-app>
-    <v-app-bar color="secondary">
-      <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <v-app-bar-title>{{ VITE_TITLE || "Auto CRUD" }}</v-app-bar-title>
-    </v-app-bar>
-
-    <v-navigation-drawer v-model="drawer">
+  <AppTemplate :options="options">
+    <template v-slot:nav>
       <v-list nav>
         <v-list-item
           prepend-icon="mdi-home"
@@ -21,23 +16,31 @@
           :to="`/${table}/`"
         />
       </v-list>
-    </v-navigation-drawer>
-
-    <v-main class="bg-grey-lighten-4">
-      <v-container>
-        <router-view />
-      </v-container>
-    </v-main>
-  </v-app>
+    </template>
+  </AppTemplate>
 </template>
 
 <script setup>
 // TODO: add vuetify3 application template
 
+import AppTemplate from "@moreillon/vuetify3-application-template";
+import "@moreillon/vuetify3-application-template/dist/style.css";
 import { ref, onMounted } from "vue";
 import axios from "axios";
 
-const { VITE_TITLE, VITE_API_URL } = import.meta.env;
+const {
+  VITE_TITLE = "Auto CRUD",
+  VITE_API_URL,
+  VITE_LOGIN_URL,
+  VITE_IDENTIFICATION_URL,
+} = import.meta.env;
+
+const options = ref({
+  title: VITE_TITLE,
+  author: "Maxime Moreillon",
+  login_url: VITE_LOGIN_URL,
+  identification_url: VITE_IDENTIFICATION_URL,
+});
 
 const drawer = ref(false);
 const loading = ref(false);
