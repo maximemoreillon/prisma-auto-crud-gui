@@ -117,6 +117,7 @@ watch(table, () => {
 });
 
 watch(query, () => {
+  if (!table.value) return;
   getItems();
 });
 
