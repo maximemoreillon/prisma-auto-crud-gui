@@ -111,7 +111,7 @@ onMounted(() => {
 });
 
 watch(table, () => {
-  if (!table) return;
+  if (!table.value) return;
   getFields();
   getItems();
 });
