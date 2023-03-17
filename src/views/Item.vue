@@ -18,7 +18,7 @@
       <!-- TODO: don't show foreign keys -->
 
       <v-card-text>
-        <h3>{{ table }} {{ id }} properties (excluding ID and foreign keys)</h3>
+        <h3>{{ table }} {{ id }} properties</h3>
       </v-card-text>
 
       <v-card-text>
@@ -40,10 +40,8 @@
       </v-card-text>
 
       <!-- Related items -->
-      <!-- Foreign keys -->
-
       <v-card-text>
-        <h3>Foreign keys: {{ foreignKeys.join(", ") }}</h3>
+        <h3>This {{ table }} to One relationships</h3>
       </v-card-text>
       <v-card-text
         v-for="{ name, relationFromFields } in fieldsWithForeignKeys"
@@ -59,10 +57,7 @@
       <v-card-text v-if="!fieldsWithForeignKeys.length"> None </v-card-text>
 
       <v-card-text>
-        <h3>
-          Current item is foreign key of those:
-          {{ fieldsFromOtherTables.map(({ name }) => name).join(",") }}
-        </h3>
+        <h3>This {{ table }} to Many relationships</h3>
       </v-card-text>
       <v-card-text v-for="{ name } in fieldsFromOtherTables" :key="name">
         <RelatedItemsTable

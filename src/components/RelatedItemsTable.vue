@@ -1,7 +1,14 @@
 <!-- TODO: Pagination, sorting, ordering, search -->
 <!-- TODO: allow deletion of related item -->
 <template>
-  <v-card :title="table" variant="outlined">
+  <v-card variant="outlined">
+    <v-toolbar>
+      <v-toolbar-title>
+        {{ table }}
+      </v-toolbar-title>
+      <v-spacer />
+      <v-btn :to="`/${table}`" icon="mdi-eye" />
+    </v-toolbar>
     <v-card-text>
       <v-table>
         <thead>
@@ -9,7 +16,7 @@
             <th v-for="field in fieldsToShow" :key="`header_${field.name}`">
               {{ field.name }}
             </th>
-            <th class="text-left">See</th>
+            <th>See</th>
           </tr>
         </thead>
         <tbody>

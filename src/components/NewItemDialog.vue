@@ -6,9 +6,9 @@
 
     <v-card :title="`New ${table}`" :loading="fieldsLoading">
       <v-form @submit.prevent="createItem()">
-        <v-card-text>
-          <v-row v-for="field in fields" :key="field.name">
-            <v-col v-if="field.name !== 'id'">
+        <v-card-text v-if="fieldsToInput.length">
+          <v-row v-for="field in fieldsToInput" :key="field.name">
+            <v-col>
               <v-text-field
                 v-if="['Int', 'Float'].includes(field.type)"
                 :label="field.name"
@@ -20,11 +20,18 @@
                 :label="field.name"
                 v-model="newitem[field.name]"
               />
-              <span v-else>
-                Type {{ field.type }} is not supported at the moment
-              </span>
+              <v-text-field
+                v-else
+                disabled
+                persistent-hint
+                :label="field.name"
+                :hint="`Type ${field.type} is not supported at the moment`"
+              />
             </v-col>
           </v-row>
+        </v-card-text>
+        <v-card-text v-else>
+          There are no fields that can be set on {{ table }} at the moment
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -90,4 +97,36 @@ const createItem = async () => {
     creating.value = false;
   }
 };
+
+// Finding fields that are foreign keys, pointing to other items
+const fieldsWithForeignKeys = computed(() =>
+  fields.value.filter(
+    (field) => field.relationFromFields && field.relationFromFields.length
+  )
+);
+
+const fieldsFromOtherTables = computed(() =>
+  fields.value.filter(
+    // TODO: totally not sure whether this is correct
+    // NOTE: there is also relationToFields. Figure out which one to use
+    (field) => field.relationFromFields && !field.relationFromFields.length
+  )
+);
+
+const foreignKeys = computed(() =>
+  fieldsWithForeignKeys.value.map(
+    ({ relationFromFields }) => relationFromFields[0]
+  )
+);
+
+const fieldsToInput = computed(() =>
+  fields.value.filter(
+    (field) =>
+      !foreignKeys.value.includes(field.name) &&
+      !fieldsFromOtherTables.value.includes(field.name) &&
+      // TODO: allow adding related items
+      field.kind !== "object" &&
+      field.name !== "id"
+  )
+);
 </script>
