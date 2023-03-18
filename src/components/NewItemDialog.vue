@@ -6,7 +6,8 @@
 
     <v-card :title="`New ${table}`" :loading="fieldsLoading">
       <v-form @submit.prevent="createItem()">
-        <v-card-text v-if="fieldsToInput.length">
+        <v-card-text>
+          <!-- Primitive fields without foreign keys -->
           <v-row v-for="field in fieldsToInput" :key="field.name">
             <v-col>
               <v-text-field
@@ -29,10 +30,26 @@
               />
             </v-col>
           </v-row>
+
+          <!-- Foreign keys -->
+          <v-row v-for="field in fieldsWithForeignKeys" :key="field.name">
+            <v-col>
+              <v-text-field
+                variant="outlined"
+                :label="field.relationFromFields[0]"
+                v-model="newitem[field.name]"
+                readonly
+              />
+            </v-col>
+            <v-col cols="auto">
+              <SetItemDialog
+                @selection="newitem[field.name] = $event"
+                :table="field.name"
+              />
+            </v-col>
+          </v-row>
         </v-card-text>
-        <v-card-text v-else>
-          There are no fields that can be set on {{ table }} at the moment
-        </v-card-text>
+
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" @click="dialog = false">Close</v-btn>
@@ -46,12 +63,15 @@
 </template>
 
 <script setup>
+// TODO: importing those might not have been necessary
 import { VRow, VCol, VSpacer } from "vuetify/components/VGrid";
 import { VCard, VCardText, VCardActions } from "vuetify/components/VCard";
 import { VForm } from "vuetify/components/VForm";
 import { VTextField } from "vuetify/components/VTextField";
 import { VDialog } from "vuetify/components/VDialog";
 import { VBtn } from "vuetify/components/VBtn";
+
+import SetItemDialog from "./SetItemDialog.vue";
 
 import { ref, onMounted, computed, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -116,6 +136,13 @@ const fieldsFromOtherTables = computed(() =>
 const foreignKeys = computed(() =>
   fieldsWithForeignKeys.value.map(
     ({ relationFromFields }) => relationFromFields[0]
+  )
+);
+
+const primitiveFields = computed(() =>
+  fields.value.filter(
+    // TODO: consider field.type otherwise
+    (field) => field.name !== "id" && field.kind == "scalar"
   )
 );
 
