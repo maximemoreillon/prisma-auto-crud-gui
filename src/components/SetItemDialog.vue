@@ -21,10 +21,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" :key="item.id">
+            <tr v-for="(item, index) in items" :key="index">
               <td
                 v-for="field in primitiveFields"
-                :key="`item_${item.id}_${field.name}`"
+                :key="`item_${index}_${field.name}`"
               >
                 {{ item[field.name] }}
               </td>
@@ -101,8 +101,8 @@ const primitiveFields = computed(() =>
 );
 
 // TODO: return entire object
-const itemSelected = (id) => {
-  emit("selection", id);
+const itemSelected = (item) => {
+  emit("selection", item);
   dialog.value = false;
 };
 </script>

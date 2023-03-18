@@ -33,7 +33,11 @@
 
           <!-- Foreign keys -->
           <v-row
-            v-for="{ name, relationFromFields } in fieldsWithForeignKeys"
+            v-for="{
+              name,
+              relationFromFields,
+              relationToFields,
+            } in fieldsWithForeignKeys"
             :key="name"
           >
             <v-col>
@@ -41,8 +45,20 @@
               <Relateditem
                 :table="name"
                 :item="newitem[name]"
-                @delete="updateRelatedItem(relationFromFields[0], null)"
-                @update="updateRelatedItem(relationFromFields[0], $event)"
+                @delete="
+                  updateRelatedItem(
+                    relationFromFields[0],
+                    null,
+                    relationToFields[0]
+                  )
+                "
+                @update="
+                  updateRelatedItem(
+                    relationFromFields[0],
+                    $event,
+                    relationToFields[0]
+                  )
+                "
               />
             </v-col>
           </v-row>
@@ -156,7 +172,7 @@ const fieldsToInput = computed(() =>
   )
 );
 
-const updateRelatedItem = async (key, value) => {
-  newitem[key] = value;
+const updateRelatedItem = async (key, value, foreignKey) => {
+  item.value[key] = value[foreignKey];
 };
 </script>

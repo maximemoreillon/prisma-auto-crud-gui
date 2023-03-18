@@ -48,6 +48,7 @@ import axios from "axios";
 const props = defineProps({
   item: Object,
   table: String,
+  key: String,
 });
 
 const emit = defineEmits(["update", "delete"]);
@@ -72,14 +73,11 @@ const getFields = async () => {
 };
 
 const primitiveFields = computed(() =>
-  fields.value.filter(
-    // TODO: consider field.type otherwise
-    (field) => field.name !== "id" && field.kind == "scalar"
-  )
+  fields.value.filter((field) => field.kind == "scalar")
 );
 
 const selectionHandler = (event) => {
-  emit("update", event.id);
+  emit("update", event);
   localItem.value = event;
 };
 </script>

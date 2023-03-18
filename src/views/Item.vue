@@ -44,14 +44,26 @@
         <h3>This {{ table }} to One relationships</h3>
       </v-card-text>
       <v-card-text
-        v-for="{ name, relationFromFields } in fieldsWithForeignKeys"
+        v-for="{
+          name,
+          relationFromFields,
+          relationToFields,
+        } in fieldsWithForeignKeys"
         :key="name"
       >
         <Relateditem
           :table="name"
           :item="item[name]"
-          @delete="updateRelatedItem(relationFromFields[0], null)"
-          @update="updateRelatedItem(relationFromFields[0], $event)"
+          @delete="
+            updateRelatedItem(relationFromFields[0], null, relationToFields[0])
+          "
+          @update="
+            updateRelatedItem(
+              relationFromFields[0],
+              $event,
+              relationToFields[0]
+            )
+          "
         />
       </v-card-text>
       <v-card-text v-if="!fieldsWithForeignKeys.length"> None </v-card-text>
@@ -221,8 +233,9 @@ const foreignKeys = computed(() =>
   )
 );
 
-const updateRelatedItem = async (key, value) => {
-  item.value[key] = value;
+const updateRelatedItem = async (key, value, foreignKey) => {
+  // TODO: get primary key
+  item.value[key] = value[foreignKey];
   await updateItem();
   getItem();
 };
