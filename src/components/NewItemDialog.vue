@@ -32,19 +32,17 @@
           </v-row>
 
           <!-- Foreign keys -->
-          <v-row v-for="field in fieldsWithForeignKeys" :key="field.name">
+          <v-row
+            v-for="{ name, relationFromFields } in fieldsWithForeignKeys"
+            :key="name"
+          >
             <v-col>
-              <v-text-field
-                variant="outlined"
-                :label="field.relationFromFields[0]"
-                v-model="newitem[field.name]"
-                readonly
-              />
-            </v-col>
-            <v-col cols="auto">
-              <SetItemDialog
-                @selection="newitem[field.name] = $event"
-                :table="field.name"
+              <div class="my-2">{{ relationFromFields[0] }}</div>
+              <Relateditem
+                :table="name"
+                :item="newitem[name]"
+                @delete="updateRelatedItem(relationFromFields[0], null)"
+                @update="updateRelatedItem(relationFromFields[0], $event)"
               />
             </v-col>
           </v-row>
@@ -71,7 +69,8 @@ import { VTextField } from "vuetify/components/VTextField";
 import { VDialog } from "vuetify/components/VDialog";
 import { VBtn } from "vuetify/components/VBtn";
 
-import SetItemDialog from "./SetItemDialog.vue";
+// import SetItemDialog from "./SetItemDialog.vue";
+import Relateditem from "../components/RelatedItem.vue";
 
 import { ref, onMounted, computed, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -156,4 +155,8 @@ const fieldsToInput = computed(() =>
       field.name !== "id"
   )
 );
+
+const updateRelatedItem = async (key, value) => {
+  newitem[key] = value;
+};
 </script>

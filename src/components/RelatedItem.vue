@@ -5,22 +5,29 @@
         {{ table }}
       </v-toolbar-title>
       <v-spacer />
-      <v-btn :to="`/${table}/${item.id}`" icon="mdi-eye" v-if="item" />
-      <SetItemDialog :table="props.table" @selection="itemSelected($event)" />
+      <v-btn
+        :to="`/${table}/${localItem.id}`"
+        icon="mdi-eye"
+        v-if="localItem"
+      />
+      <SetItemDialog
+        :table="props.table"
+        @selection="selectionHandler($event)"
+      />
       <v-btn
         @click="emit('delete')"
         icon="mdi-delete"
         color="#c00000"
-        v-if="item"
+        v-if="localItem"
       />
     </v-toolbar>
-    <v-card-text v-if="item">
+    <v-card-text v-if="localItem">
       <v-row v-for="{ name } in primitiveFields" :key="name">
         <v-col cols="">
           {{ name }}
         </v-col>
         <v-col>
-          {{ item[name] }}
+          {{ localItem[name] }}
         </v-col>
       </v-row>
     </v-card-text>
@@ -46,8 +53,11 @@ const props = defineProps({
 const emit = defineEmits(["update", "delete"]);
 
 const fields = ref([]);
+// Using a local item for optimistic update
+const localItem = ref();
 
 onMounted(() => {
+  localItem.value = props.item;
   getFields();
 });
 
@@ -68,7 +78,8 @@ const primitiveFields = computed(() =>
   )
 );
 
-const itemSelected = (event) => {
-  emit("update", event);
+const selectionHandler = (event) => {
+  emit("update", event.id);
+  localItem.value = event;
 };
 </script>

@@ -29,7 +29,7 @@
                 {{ item[field.name] }}
               </td>
               <td>
-                <v-btn @click="itemSelected(item.id)">Select</v-btn>
+                <v-btn @click="itemSelected(item)">Select</v-btn>
               </td>
             </tr>
           </tbody>
@@ -100,6 +100,7 @@ const primitiveFields = computed(() =>
   fields.value.filter(({ kind }) => kind === "scalar")
 );
 
+// TODO: return entire object
 const itemSelected = (id) => {
   emit("selection", id);
   dialog.value = false;
