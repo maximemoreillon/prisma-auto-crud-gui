@@ -2,7 +2,7 @@
   <v-card :loading="loading">
     <v-toolbar flat>
       <v-btn icon="mdi-arrow-left" @click="router.back()" />
-      <v-toolbar-title>{{ table }} {{ id }}</v-toolbar-title>
+      <v-toolbar-title>{{ table }}</v-toolbar-title>
       <v-spacer />
       <v-btn @click="updateItem" icon="mdi-content-save" :loading="updating" />
 
@@ -18,7 +18,7 @@
       <!-- TODO: don't show foreign keys -->
 
       <v-card-text>
-        <h3>{{ table }} {{ id }} properties</h3>
+        <h3>properties</h3>
       </v-card-text>
 
       <v-card-text>
@@ -71,7 +71,14 @@
       <v-card-text>
         <h3>This {{ table }} to Many relationships</h3>
       </v-card-text>
-      <v-card-text v-for="{ name } in fieldsFromOtherTables" :key="name">
+      <v-card-text
+        v-for="{
+          name,
+          relationFromFields,
+          relationToFields,
+        } in fieldsFromOtherTables"
+        :key="name"
+      >
         <RelatedItemsTable
           :items="item[name]"
           :table="name"
@@ -109,6 +116,7 @@ const route = useRoute();
 const router = useRouter();
 
 const table = computed(() => route.params.table);
+// TODO: stop relying on id
 const id = computed(() => route.params.id);
 
 const item = ref(null);

@@ -8,6 +8,8 @@
       </v-toolbar-title>
       <v-spacer />
       <v-btn :to="`/${table}`" icon="mdi-eye" />
+      <!-- TODO: preset current item as foewign_key key -->
+      <NewItemDialog :table="props.table" :presets="newItemPresets" />
     </v-toolbar>
     <v-card-text>
       <v-table>
@@ -46,6 +48,8 @@ import { VTable } from "vuetify/components/VTable";
 import { VCard, VCardText } from "vuetify/components/VCard";
 import { VBtn } from "vuetify/components/VBtn";
 
+import NewItemDialog from "../components/NewItemDialog.vue";
+
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 
@@ -53,6 +57,7 @@ const props = defineProps({
   items: Object,
   table: String,
   currentTable: { type: String, default: "" },
+  newItemPresets: { type: Object, default: {} },
 });
 
 const fields = ref([]);

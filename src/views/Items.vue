@@ -4,7 +4,7 @@
       <v-btn icon="mdi-arrow-left" :to="{ name: 'tables' }" />
       <v-toolbar-title>{{ table }}</v-toolbar-title>
       <v-spacer />
-      <NewItemDialog />
+      <NewItemDialog :table="table" />
     </v-toolbar>
     <v-divider />
     <v-card-text>
