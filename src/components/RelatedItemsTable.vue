@@ -8,7 +8,7 @@
       </v-toolbar-title>
       <v-spacer />
       <v-btn :to="`/${table}`" icon="mdi-eye" />
-      <!-- TODO: preset current item as foewign_key key -->
+      <!-- TODO: preset current item as foreign_key key -->
       <NewItemDialog :table="props.table" :presets="newItemPresets" />
     </v-toolbar>
     <v-card-text>
@@ -22,17 +22,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in items" :key="item.id">
+          <tr v-for="(item, index) in items" :key="index">
             <td
               v-for="field in fieldsToShow"
-              :key="`item_${item.id}_${field.name}`"
+              :key="`item_${item.index}_${field.name}`"
             >
               {{ item[field.name] }}
             </td>
             <td>
+              <!-- FIXME: find way to not rely on id -->
               <v-btn
                 icon="mdi-arrow-right"
-                :to="{ name: 'item', params: { table, id: item.id } }"
+                :to="{ name: 'item', params: { table, primaryKey: item.id } }"
                 flat
               />
             </td>

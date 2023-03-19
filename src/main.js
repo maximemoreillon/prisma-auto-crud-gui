@@ -13,7 +13,7 @@ export default {
     const routes = [
       { name: "tables", path: "/tables", component: Tables },
       { name: "items", path: "/:table/", component: Items },
-      { name: "item", path: "/:table/:id", component: Item },
+      { name: "item", path: "/:table/:primaryKey", component: Item },
     ];
 
     routes.forEach(router.addRoute);

@@ -131,6 +131,7 @@ const createItem = async () => {
   try {
     const route = `/${props.table}`;
     const { data } = await axios.post(route, newItem.value);
+    // FIXME: stop relying on id
     router.push({ name: "item", params: { table: props.table, id: data.id } });
   } catch (error) {
     console.error(error);

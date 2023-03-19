@@ -116,8 +116,7 @@ const route = useRoute();
 const router = useRouter();
 
 const table = computed(() => route.params.table);
-// TODO: stop relying on id
-const id = computed(() => route.params.id);
+const primaryKey = computed(() => route.params.primaryKey);
 
 const item = ref(null);
 const loading = ref(false);
@@ -143,7 +142,7 @@ const getItem = async () => {
   item.value = null;
   loading.value = true;
   try {
-    const route = `/${table.value}/${id.value}`;
+    const route = `/${table.value}/${primaryKey.value}`;
     const params = { includes: fieldsToInclude.value.map((f) => f.name) };
     const { data } = await axios.get(route, { params });
     item.value = data;

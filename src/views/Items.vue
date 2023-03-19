@@ -25,17 +25,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in items" :key="item.id">
+          <tr v-for="(item, index) in items" :key="index">
             <td
               v-for="field in primitiveFields"
-              :key="`item_${item.id}_${field.name}`"
+              :key="`item_${index}_${field.name}`"
             >
               {{ item[field.name] }}
             </td>
             <td>
+              <!-- FIXME: find way to not rely on id -->
               <v-btn
                 icon="mdi-arrow-right"
-                :to="{ name: 'item', params: { table, id: item.id } }"
+                :to="{ name: 'item', params: { table, primaryKey: item.id } }"
                 flat
               />
             </td>

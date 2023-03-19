@@ -5,6 +5,7 @@
         {{ table }}
       </v-toolbar-title>
       <v-spacer />
+      <!-- FIXME: find way to not rely on id -->
       <v-btn
         :to="`/${table}/${localItem.id}`"
         icon="mdi-eye"
