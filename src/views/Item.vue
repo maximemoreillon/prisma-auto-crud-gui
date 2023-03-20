@@ -166,7 +166,7 @@ const getModel = async () => {
 const updateItem = async () => {
   updating.value = true;
   try {
-    const route = `/${table.value}/${id.value}`;
+    const route = `/${table.value}/${primaryKey.value}`;
 
     const body = primitiveFields.value.reduce(
       (prev, { name }) => ({ ...prev, [name]: item.value[name] }),
@@ -175,7 +175,7 @@ const updateItem = async () => {
 
     await axios.put(route, body);
     snackbar.show = true;
-    snackbar.text = `${table.value} ${id.value} updated`;
+    snackbar.text = `${table.value} ${primaryKey.value} updated`;
   } catch (error) {
     console.error(error);
     snackbar.show = true;
@@ -186,10 +186,10 @@ const updateItem = async () => {
 };
 
 const deleteItem = async () => {
-  if (!confirm(`Delete ${table.value} ${id.value}?`)) return;
+  if (!confirm(`Delete ${table.value} ${primaryKey.value}?`)) return;
   deleting.value = true;
   try {
-    const route = `/${table.value}/${id.value}`;
+    const route = `/${table.value}/${primaryKey.value}`;
     await axios.delete(route);
     router.push({ name: "items", param: { table: table.value } });
   } catch (error) {
