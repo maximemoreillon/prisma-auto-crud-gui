@@ -242,7 +242,8 @@ const foreignKeys = computed(() =>
 
 const updateRelatedItem = async (key, value, foreignKey) => {
   // TODO: get primary key
-  item.value[key] = value[foreignKey];
+  if (value) item.value[key] = value[foreignKey];
+  else item.value[key] = null;
   await updateItem();
   getItem();
 };

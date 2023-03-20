@@ -186,6 +186,8 @@ const fieldsToInput = computed(() =>
 );
 
 const updateRelatedItem = async (key, value, foreignKey) => {
-  item.value[key] = value[foreignKey];
+  // FIXME: what if null?
+  if (value) item.value[key] = value[foreignKey];
+  else item.value[key] = undefined;
 };
 </script>

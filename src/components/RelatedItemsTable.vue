@@ -48,6 +48,8 @@
 import { VTable } from "vuetify/components/VTable";
 import { VCard, VCardText } from "vuetify/components/VCard";
 import { VBtn } from "vuetify/components/VBtn";
+import { VToolbar, VToolbarTitle } from "vuetify/components/VToolbar";
+import { VSpacer } from "vuetify/components/VGrid";
 
 import NewItemDialog from "../components/NewItemDialog.vue";
 
