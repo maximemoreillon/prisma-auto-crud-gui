@@ -132,7 +132,10 @@ const createItem = async () => {
     const route = `/${props.table}`;
     const { data } = await axios.post(route, newItem.value);
     // FIXME: stop relying on id
-    router.push({ name: "item", params: { table: props.table, id: data.id } });
+    router.push({
+      name: "item",
+      params: { table: props.table, primaryKey: data.id },
+    });
   } catch (error) {
     console.error(error);
   } finally {
@@ -167,19 +170,13 @@ const foreignKeys = computed(() =>
   )
 );
 
-const primitiveFields = computed(() =>
-  fields.value.filter(
-    // TODO: consider field.type otherwise
-    (field) => field.name !== "id" && field.kind == "scalar"
-  )
-);
-
 const fieldsToInput = computed(() =>
   fields.value.filter(
     (field) =>
       !foreignKeys.value.includes(field.name) &&
       !fieldsFromOtherTables.value.includes(field.name) &&
       // TODO: allow adding related items
+      // FIXME: relying on primary key
       field.kind !== "object" &&
       field.name !== "id"
   )
@@ -187,7 +184,7 @@ const fieldsToInput = computed(() =>
 
 const updateRelatedItem = async (key, value, foreignKey) => {
   // FIXME: what if null?
-  if (value) item.value[key] = value[foreignKey];
-  else item.value[key] = undefined;
+  if (value) newItem.value[key] = value[foreignKey];
+  else newItem.value[key] = undefined;
 };
 </script>
