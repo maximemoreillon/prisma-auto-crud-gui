@@ -30,10 +30,13 @@
               {{ item[field.name] }}
             </td>
             <td>
-              <!-- FIXME: find way to not rely on id -->
               <v-btn
+                v-if="primaryKeyField"
                 icon="mdi-arrow-right"
-                :to="{ name: 'item', params: { table, primaryKey: item.id } }"
+                :to="{
+                  name: 'item',
+                  params: { table, primaryKey: item[primaryKeyField] },
+                }"
                 flat
               />
             </td>
@@ -78,6 +81,10 @@ const getFields = async () => {
     console.error(error);
   }
 };
+
+const primaryKeyField = computed(
+  () => fields.value.find(({ isId }) => isId)?.name
+);
 
 // TODO: simplify the following computeds
 const primitiveFields = computed(() =>

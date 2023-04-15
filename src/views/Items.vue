@@ -33,10 +33,13 @@
               {{ item[field.name] }}
             </td>
             <td>
-              <!-- FIXME: find way to not rely on id -->
               <v-btn
+                v-if="primaryKeyField"
                 icon="mdi-arrow-right"
-                :to="{ name: 'item', params: { table, primaryKey: item.id } }"
+                :to="{
+                  name: 'item',
+                  params: { table, primaryKey: item[primaryKeyField] },
+                }"
                 flat
               />
             </td>
@@ -85,7 +88,7 @@ const query = computed(() => route.query);
 
 const sort = computed({
   get() {
-    return query.value.sort || "id";
+    return query.value.sort || primaryKeyField.value;
   },
   set(newVal) {
     updateQuery({ sort: newVal });
@@ -104,6 +107,10 @@ const order = computed({
 const primitiveFields = computed(() =>
   // TODO: consider field.type otherwise
   fields.value.filter(({ kind }) => kind === "scalar")
+);
+
+const primaryKeyField = computed(
+  () => fields.value.find(({ isId }) => isId)?.name
 );
 
 onMounted(() => {

@@ -5,11 +5,10 @@
         {{ table }}
       </v-toolbar-title>
       <v-spacer />
-      <!-- FIXME: find way to not rely on id -->
       <v-btn
-        :to="`/${table}/${localItem.id}`"
+        :to="`/${table}/${localItem[primaryKeyField]}`"
         icon="mdi-eye"
-        v-if="localItem"
+        v-if="localItem && primaryKeyField"
       />
       <SetItemDialog
         :table="props.table"
@@ -72,6 +71,10 @@ const getFields = async () => {
     console.error(error);
   }
 };
+
+const primaryKeyField = computed(
+  () => fields.value.find(({ isId }) => isId)?.name
+);
 
 const primitiveFields = computed(() =>
   fields.value.filter((field) => field.kind == "scalar")

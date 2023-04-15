@@ -126,15 +126,18 @@ const getFields = async () => {
   }
 };
 
+const primaryKeyField = computed(
+  () => fields.value.find(({ isId }) => isId)?.name
+);
+
 const createItem = async () => {
   creating.value = true;
   try {
     const route = `/${props.table}`;
     const { data } = await axios.post(route, newItem.value);
-    // FIXME: stop relying on id
     router.push({
       name: "item",
-      params: { table: props.table, primaryKey: data.id },
+      params: { table: props.table, primaryKey: data[primaryKeyField.value] },
     });
   } catch (error) {
     console.error(error);
@@ -176,9 +179,8 @@ const fieldsToInput = computed(() =>
       !foreignKeys.value.includes(field.name) &&
       !fieldsFromOtherTables.value.includes(field.name) &&
       // TODO: allow adding related items
-      // FIXME: relying on primary key
       field.kind !== "object" &&
-      field.name !== "id"
+      field.name !== primaryKeyField.value
   )
 );
 

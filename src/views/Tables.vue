@@ -3,10 +3,10 @@
     <v-card-text>
       <v-list lines="one">
         <v-list-item
-          v-for="table in tables"
-          :key="table"
-          :title="table"
-          :to="{ name: 'items', params: { table } }"
+          v-for="model in models"
+          :key="model.name"
+          :title="model.name"
+          :to="{ name: 'items', params: { table: model.name } }"
         />
       </v-list>
     </v-card-text>
@@ -19,18 +19,18 @@ import { VList, VListItem } from "vuetify/components/VList";
 import { ref, onMounted } from "vue";
 import axios from "axios";
 
-const tables = ref([]);
+const models = ref([]);
 const loading = ref(false);
 
 onMounted(() => {
-  getTables();
+  getModels();
 });
 
-const getTables = async () => {
+const getModels = async () => {
   loading.value = true;
   try {
-    const { data } = await axios.get("/tables");
-    tables.value = data;
+    const { data } = await axios.get("/models");
+    models.value = data;
   } catch (error) {
     console.error(error);
   } finally {

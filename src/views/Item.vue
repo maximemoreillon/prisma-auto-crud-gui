@@ -201,10 +201,14 @@ const deleteItem = async () => {
   }
 };
 
+const primaryKeyField = computed(
+  () => fields.value.find(({ isId }) => isId)?.name
+);
+
 const primitiveFields = computed(() =>
   fields.value.filter(
     // TODO: consider field.type otherwise
-    (field) => field.name !== "id" && field.kind == "scalar"
+    (field) => field.name !== primaryKeyField.value && field.kind == "scalar"
   )
 );
 
