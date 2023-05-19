@@ -12,6 +12,7 @@
         <thead>
           <tr>
             <th v-for="field in primitiveFields" :key="`header_${field.name}`">
+              <th class="text-left">See</th>
               <v-btn
                 variant="text"
                 class="text-capitalize"
@@ -21,17 +22,11 @@
                 {{ field.name }}
               </v-btn>
             </th>
-            <th class="text-left">See</th>
+            
           </tr>
         </thead>
         <tbody>
           <tr v-for="(item, index) in items" :key="index">
-            <td
-              v-for="field in primitiveFields"
-              :key="`item_${index}_${field.name}`"
-            >
-              {{ item[field.name] }}
-            </td>
             <td>
               <v-btn
                 v-if="primaryKeyField"
@@ -42,6 +37,12 @@
                 }"
                 flat
               />
+            </td>
+            <td
+              v-for="field in primitiveFields"
+              :key="`item_${index}_${field.name}`"
+            >
+              {{ item[field.name] }}
             </td>
           </tr>
         </tbody>
