@@ -4,9 +4,9 @@
       <v-list lines="one">
         <v-list-item
           v-for="model in models"
-          :key="model.name"
-          :title="model.name"
-          :to="{ name: 'items', params: { table: model.name } }"
+          :key="model"
+          :title="model"
+          :to="{ name: 'items', params: { table: model } }"
         />
       </v-list>
     </v-card-text>
