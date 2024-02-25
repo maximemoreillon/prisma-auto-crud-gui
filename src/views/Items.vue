@@ -11,8 +11,8 @@
       <v-table>
         <thead>
           <tr>
+            <th class="text-left">See</th>
             <th v-for="field in primitiveFields" :key="`header_${field.name}`">
-              <th class="text-left">See</th>
               <v-btn
                 variant="text"
                 class="text-capitalize"
@@ -22,7 +22,6 @@
                 {{ field.name }}
               </v-btn>
             </th>
-            
           </tr>
         </thead>
         <tbody>

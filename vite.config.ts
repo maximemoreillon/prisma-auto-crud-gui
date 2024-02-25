@@ -28,13 +28,13 @@ export default defineConfig({
     extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
   server: {
-    port: 8080,
+    port: 3000,
   },
 
   // Options to build an NPM package
   build: {
     lib: {
-      entry: resolve(__dirname, "src/main.ts"),
+      entry: resolve(__dirname, "src/autoCrud.ts"),
       name: "PrismaAutoCrudGui",
       // the proper extensions will be added
       fileName: "prisma-auto-crud-gui",

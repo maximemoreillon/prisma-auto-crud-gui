@@ -8,11 +8,11 @@
 import { loadFonts } from "./webfontloader";
 import vuetify from "./vuetify";
 import router from "../router";
-import prismaAutoCrudGui from "@moreillon/prisma-auto-crud-vuetify";
 
+import prismaAutoCrudGui from "../autoCrud";
 const apiUrl = import.meta.env.VITE_API_URL;
 
-// WARNING: Order is important
+// WARNING: ORDER IS IMPORTANT, MUST BE USED BEFORE ROUTER
 export function registerPlugins(app) {
   loadFonts();
   app.use(vuetify);
