@@ -4,7 +4,7 @@
       <v-btn icon="mdi-arrow-left" :to="{ name: 'tables' }" />
       <v-toolbar-title>{{ table }}</v-toolbar-title>
       <v-spacer />
-      <NewItemDialog :table="table" />
+      <NewItemDialog :table="(table as string)" />
     </v-toolbar>
     <v-divider />
     <v-card-text>
@@ -52,7 +52,7 @@
   </v-card>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { VTable } from "vuetify/components/VTable";
 import { VCard, VCardText } from "vuetify/components/VCard";
 import { VDivider } from "vuetify/components/VDivider";
@@ -70,7 +70,7 @@ import axios from "axios";
 const route = useRoute();
 const router = useRouter();
 
-const updateQuery = (newItem) => {
+const updateQuery = (newItem: any) => {
   const query = { ...route.query, ...newItem };
   // Preventing route duplicates
   if (JSON.stringify(route.query) !== JSON.stringify(query))
@@ -79,7 +79,7 @@ const updateQuery = (newItem) => {
 
 const total = ref(0);
 const items = ref([]);
-const fields = ref([]);
+const fields = ref<any[]>([]);
 const loading = ref(false);
 const table = computed(() => route.params.table);
 const query = computed(() => route.query);
@@ -156,14 +156,14 @@ const getFields = async () => {
   }
 };
 
-const headerButtonIcon = (field) => {
+const headerButtonIcon = (field: any) => {
   if (sort.value === field.name) {
     if (order.value === "desc") return "mdi-arrow-up";
     else return "mdi-arrow-down";
   } else return undefined;
 };
 
-const headerButtonClicked = (field) => {
+const headerButtonClicked = (field: any) => {
   if (sort.value === field.name) {
     if (order.value === "desc") order.value = "asc";
     else order.value = "desc";

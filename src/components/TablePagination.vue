@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row v-if="total">
     <v-col>
       <v-pagination v-model="page" :length="Math.ceil(total / take)" />
     </v-col>
@@ -9,7 +9,7 @@
   </v-row>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { VPagination } from "vuetify/components/VPagination";
 import { VSelect } from "vuetify/components/VSelect";
 import { VRow, VCol } from "vuetify/components/VGrid";
@@ -21,7 +21,7 @@ const router = useRouter();
 const route = useRoute();
 const query = computed(() => route.query);
 
-const updateQuery = (newItem) => {
+const updateQuery = (newItem: any) => {
   const query = { ...route.query, ...newItem };
   // Preventing route duplicates
   // TODO: find better way

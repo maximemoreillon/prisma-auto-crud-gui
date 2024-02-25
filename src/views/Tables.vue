@@ -13,7 +13,7 @@
   </v-card>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { VCard, VCardText } from "vuetify/components/VCard";
 import { VList, VListItem } from "vuetify/components/VList";
 import { ref, onMounted } from "vue";

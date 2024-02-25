@@ -13,6 +13,6 @@
   </v-app>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const { VITE_TITLE } = import.meta.env;
 </script>

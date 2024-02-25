@@ -47,7 +47,7 @@
   </v-card>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { VTable } from "vuetify/components/VTable";
 import { VCard, VCardText } from "vuetify/components/VCard";
 import { VBtn } from "vuetify/components/VBtn";
@@ -66,7 +66,7 @@ const props = defineProps({
   newItemPresets: { type: Object, default: {} },
 });
 
-const fields = ref([]);
+const fields = ref<any[]>([]);
 
 onMounted(() => {
   getFields();

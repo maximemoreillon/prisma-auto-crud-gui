@@ -39,7 +39,7 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { VCard, VCardText } from "vuetify/components/VCard";
 import { ref, onMounted, computed } from "vue";
 import { VTable } from "vuetify/components/VTable";
@@ -49,8 +49,8 @@ import { VBtn } from "vuetify/components/VBtn";
 import axios from "axios";
 
 const total = ref(0);
-const items = ref([]);
-const fields = ref([]);
+const items = ref<any[]>([]);
+const fields = ref<any[]>([]);
 const dialog = ref(false);
 const fieldsLoading = ref(false);
 const loading = ref(false);
@@ -101,8 +101,8 @@ const primitiveFields = computed(() =>
 );
 
 // TODO: return entire object
-const itemSelected = (item) => {
-  emit("selection", item);
+const itemSelected = (event: Event) => {
+  emit("selection", event);
   dialog.value = false;
 };
 </script>

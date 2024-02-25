@@ -35,7 +35,7 @@
   </v-card>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { VRow, VCol, VSpacer } from "vuetify/components/VGrid";
 import { VCard, VCardText } from "vuetify/components/VCard";
 import { VToolbar, VToolbarTitle } from "vuetify/components/VToolbar";
@@ -53,7 +53,7 @@ const props = defineProps({
 
 const emit = defineEmits(["update", "delete"]);
 
-const fields = ref([]);
+const fields = ref<any[]>([]);
 // Using a local item for optimistic update
 const localItem = ref();
 
@@ -80,7 +80,7 @@ const primitiveFields = computed(() =>
   fields.value.filter((field) => field.kind == "scalar")
 );
 
-const selectionHandler = (event) => {
+const selectionHandler = (event: Event) => {
   emit("update", event);
   localItem.value = event;
 };

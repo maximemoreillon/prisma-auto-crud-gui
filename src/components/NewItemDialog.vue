@@ -76,7 +76,7 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // TODO: importing those might not have been necessary
 import { VRow, VCol, VSpacer } from "vuetify/components/VGrid";
 import { VCard, VCardText, VCardActions } from "vuetify/components/VCard";
@@ -102,11 +102,11 @@ const props = defineProps({
 
 const router = useRouter();
 
-const fields = ref([]);
+const fields = ref<any[]>([]);
 const dialog = ref(false);
 const fieldsLoading = ref(false);
 const creating = ref(false);
-const newItem = ref({});
+const newItem = ref<any>({});
 
 onMounted(() => {
   newItem.value = props.presets;
@@ -184,7 +184,11 @@ const fieldsToInput = computed(() =>
   )
 );
 
-const updateRelatedItem = async (key, value, foreignKey) => {
+const updateRelatedItem = async (
+  key: string,
+  value: any,
+  foreignKey: string
+) => {
   // FIXME: what if null?
   if (value) newItem.value[key] = value[foreignKey];
   else newItem.value[key] = undefined;

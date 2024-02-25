@@ -4,7 +4,12 @@
       <v-btn icon="mdi-arrow-left" @click="router.back()" />
       <v-toolbar-title>{{ table }}</v-toolbar-title>
       <v-spacer />
-      <v-btn @click="updateItem" icon="mdi-content-save" :loading="updating" />
+      <v-btn
+        @click="updateItem"
+        icon="mdi-content-save"
+        :disabled="!itemHasBeenEdited"
+        :loading="updating"
+      />
 
       <v-btn
         @click="deleteItem()"
@@ -71,18 +76,11 @@
       <v-card-text>
         <h3>This {{ table }} to Many relationships</h3>
       </v-card-text>
-      <v-card-text
-        v-for="{
-          name,
-          relationFromFields,
-          relationToFields,
-        } in fieldsFromOtherTables"
-        :key="name"
-      >
+      <v-card-text v-for="{ name } in fieldsFromOtherTables" :key="name">
         <RelatedItemsTable
           :items="item[name]"
           :table="name"
-          :currentTable="table"
+          :currentTable="(table as string)"
         />
       </v-card-text>
       <v-card-text v-if="!fieldsFromOtherTables.length"> None </v-card-text>
@@ -97,7 +95,7 @@
   </v-snackbar>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { VCard, VCardText } from "vuetify/components/VCard";
 import { VToolbar, VToolbarTitle } from "vuetify/components/VToolbar";
 import { VBtn } from "vuetify/components/VBtn";
@@ -118,14 +116,15 @@ const router = useRouter();
 const table = computed(() => route.params.table);
 const primaryKey = computed(() => route.params.primaryKey);
 
-const item = ref(null);
+const item = ref<any>(null);
+const itemCopy = ref(<any>null);
 const loading = ref(false);
 const updating = ref(false);
 const deleting = ref(false);
-const fields = ref([]);
+const fields = ref<any[]>([]);
 const snackbar = reactive({
   show: false,
-  text: null,
+  text: "",
 });
 
 onMounted(async () => {
@@ -146,6 +145,7 @@ const getItem = async () => {
     const params = { includes: fieldsToInclude.value.map((f) => f.name) };
     const { data } = await axios.get(route, { params });
     item.value = data;
+    itemCopy.value = Object.assign({}, item.value);
   } catch (error) {
     console.error(error);
   } finally {
@@ -176,6 +176,7 @@ const updateItem = async () => {
     await axios.put(route, body);
     snackbar.show = true;
     snackbar.text = `${table.value} ${primaryKey.value} updated`;
+    itemCopy.value = Object.assign({}, item.value);
   } catch (error) {
     console.error(error);
     snackbar.show = true;
@@ -191,7 +192,7 @@ const deleteItem = async () => {
   try {
     const route = `/${table.value}/${primaryKey.value}`;
     await axios.delete(route);
-    router.push({ name: "items", param: { table: table.value } });
+    router.push({ name: "items", params: { table: table.value } });
   } catch (error) {
     console.error(error);
     snackbar.show = true;
@@ -244,11 +245,19 @@ const foreignKeys = computed(() =>
   )
 );
 
-const updateRelatedItem = async (key, value, foreignKey) => {
+const updateRelatedItem = async (
+  key: string,
+  value: any,
+  foreignKey: string
+) => {
   // TODO: get primary key
   if (value) item.value[key] = value[foreignKey];
   else item.value[key] = null;
   await updateItem();
   getItem();
 };
+
+const itemHasBeenEdited = computed(
+  () => JSON.stringify(item.value) !== JSON.stringify(itemCopy.value)
+);
 </script>
