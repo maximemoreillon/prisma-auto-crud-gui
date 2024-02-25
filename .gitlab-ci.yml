@@ -8,10 +8,10 @@ variables:
   CONTAINER_IMAGE_TAGGED: ${CONTAINER_IMAGE}:${CI_COMMIT_SHORT_SHA}
 
 publish:
-  image: node:16
+  image: node:20
   stage: publish
   only:
-    - master
+    - tags
   tags:
     - moreillon
   script:
@@ -25,7 +25,7 @@ publish:
 containerize:
   image: moreillon/ci-dind
   services:
-    - name: docker:19.03.12-dind
+    - name: docker:24.0.7-dind
   stage: containerize
   only:
     - master
@@ -34,7 +34,7 @@ containerize:
   before_script:
     - echo "${DOCKER_HUB_PASSWORD}" | docker login --username ${DOCKER_HUB_USERNAME} --password-stdin;
   script:
-    - docker build -t ${CONTAINER_IMAGE} ./docker/
+    - docker build -t ${CONTAINER_IMAGE} .
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_TAGGED}
     - docker push ${CONTAINER_IMAGE}
     - docker push ${CONTAINER_IMAGE_TAGGED}

@@ -1,7 +1,6 @@
-FROM node:16 as build-stage
+FROM node:20 as build-stage
 WORKDIR /app
 COPY package*.json ./
-# COPY moreillon-prisma-auto-crud-vuetify-*.tgz ./
 RUN npm install
 COPY ./ .
 RUN npm run build

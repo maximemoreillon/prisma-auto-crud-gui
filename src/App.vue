@@ -20,7 +20,7 @@
   </AppTemplate>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import AppTemplate from "@moreillon/vuetify3-application-template";
 import "@moreillon/vuetify3-application-template/dist/style.css";
 import { ref, onMounted } from "vue";
@@ -46,7 +46,7 @@ onMounted(() => {
 const getTables = async () => {
   loading.value = true;
   try {
-    const { data } = await axios.get(`${VITE_API_URL}/tables`);
+    const { data } = await axios.get(`${VITE_API_URL}/models`);
     tables.value = data;
   } catch (error) {
     console.error(error);
