@@ -33,6 +33,7 @@
     "@moreillon/vuetify3-application-template": "^1.1.1",
     "@types/node": "^20.11.20",
     "@vitejs/plugin-vue": "^3.0.3",
+    "sass": "^1.71.1",
     "typescript": "^5.3.3",
     "vite": "^3.1.9",
     "vite-plugin-vuetify": "^1.0.0-alpha.12",
