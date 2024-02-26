@@ -23,10 +23,8 @@
       <!-- TODO: don't show foreign keys -->
 
       <v-card-text>
-        <h3>properties</h3>
-      </v-card-text>
+        <h3 class="mb-4">{{ table }} properties</h3>
 
-      <v-card-text>
         <v-row
           v-for="{ name, type } in primitiveFieldsWithoutForeignKeys"
           :key="name"
@@ -45,45 +43,51 @@
       </v-card-text>
 
       <!-- Related items -->
-      <v-card-text>
-        <h3>This {{ table }} to One relationships</h3>
-      </v-card-text>
-      <v-card-text
-        v-for="{
-          name,
-          relationFromFields,
-          relationToFields,
-        } in fieldsWithForeignKeys"
-        :key="name"
-      >
-        <Relateditem
-          :table="name"
-          :item="item[name]"
-          @delete="
-            updateRelatedItem(relationFromFields[0], null, relationToFields[0])
-          "
-          @update="
-            updateRelatedItem(
-              relationFromFields[0],
-              $event,
-              relationToFields[0]
-            )
-          "
-        />
-      </v-card-text>
-      <v-card-text v-if="!fieldsWithForeignKeys.length"> None </v-card-text>
+      <template v-if="fieldsWithForeignKeys.length">
+        <v-card-text>
+          <h3>This {{ table }} to One relationships</h3>
+        </v-card-text>
+        <v-card-text
+          v-for="{
+            name,
+            relationFromFields,
+            relationToFields,
+          } in fieldsWithForeignKeys"
+          :key="name"
+        >
+          <Relateditem
+            :table="name"
+            :item="item[name]"
+            @delete="
+              updateRelatedItem(
+                relationFromFields[0],
+                null,
+                relationToFields[0]
+              )
+            "
+            @update="
+              updateRelatedItem(
+                relationFromFields[0],
+                $event,
+                relationToFields[0]
+              )
+            "
+          />
+        </v-card-text>
+      </template>
 
-      <v-card-text>
-        <h3>This {{ table }} to Many relationships</h3>
-      </v-card-text>
-      <v-card-text v-for="{ name } in fieldsFromOtherTables" :key="name">
-        <RelatedItemsTable
-          :items="item[name]"
-          :table="name"
-          :currentTable="(table as string)"
-        />
-      </v-card-text>
-      <v-card-text v-if="!fieldsFromOtherTables.length"> None </v-card-text>
+      <template v-if="fieldsFromOtherTables.length">
+        <v-card-text>
+          <h3>This {{ table }} to Many relationships</h3>
+        </v-card-text>
+        <v-card-text v-for="{ name } in fieldsFromOtherTables" :key="name">
+          <RelatedItemsTable
+            :items="item[name]"
+            :table="name"
+            :currentTable="(table as string)"
+          />
+        </v-card-text>
+      </template>
     </template>
   </v-card>
 

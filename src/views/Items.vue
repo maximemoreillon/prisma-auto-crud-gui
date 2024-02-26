@@ -8,6 +8,7 @@
     </v-toolbar>
     <v-divider />
     <v-card-text>
+      <!-- TODO: use v-data-table-server -->
       <v-table>
         <thead>
           <tr>
@@ -87,18 +88,14 @@ const query = computed(() => route.query);
 // Will be simplified when Vuetify 3 releases data-tables
 
 const sort = computed({
-  get() {
-    return query.value.sort || primaryKeyField.value;
-  },
+  get: () => query.value.sort || primaryKeyField.value,
   set(newVal) {
     updateQuery({ sort: newVal });
   },
 });
 
 const order = computed({
-  get() {
-    return query.value.order || "desc";
-  },
+  get: () => query.value.order || "desc",
   set(newVal) {
     updateQuery({ order: newVal });
   },
