@@ -8,7 +8,18 @@
     </v-toolbar>
     <v-divider />
     <v-card-text>
-      <!-- TODO: search -->
+      <v-form @submit.prevent="getItems()">
+        <v-row no-gutters>
+          <v-col>
+            <v-text-field label="Search" v-model="search" />
+          </v-col>
+          <v-col cols="auto">
+            <v-btn type="submit" icon="mdi-magnify" variant="flat" />
+          </v-col>
+          <v-spacer />
+        </v-row>
+      </v-form>
+
       <v-data-table-server
         :headers="headers"
         :items="items"
@@ -16,7 +27,7 @@
         :items-per-page="tableOptions.itemsPerPage"
         :page="tableOptions.page"
         :sort-by="tableOptions.sortBy"
-        @update:options="handleOptionsUpdate"
+        @update:options="handleTableOptionsUpdate($event)"
       >
         <template v-slot:item.details="{ item }">
           <v-btn
@@ -55,21 +66,14 @@ const total = ref(0);
 const items = ref([]);
 const fields = ref<any[]>([]);
 const loading = ref(false);
-const table = computed(() => route.params.table);
-
-const {
-  page = "1",
-  itemsPerPage = "10",
-  sort = undefined,
-  order = undefined,
-} = route.query;
-
+const search = ref(route.query.search);
 const tableOptions = ref({
-  page: Number(page),
-  itemsPerPage: Number(itemsPerPage),
-  sortBy: [{ key: sort, order: order }] as any,
+  page: Number(route.query.page || "1"),
+  itemsPerPage: Number(route.query.take || "10"),
+  sortBy: [{ key: route.query.sort, order: route.query.order }] as any,
 });
 
+const table = computed(() => route.params.table);
 const primitiveFields = computed(() =>
   // TODO: consider field.type otherwise
   fields.value.filter(({ kind }) => kind === "scalar")
@@ -100,24 +104,27 @@ watch(table, () => {
   getItems();
 });
 
-const getItems = async (options: any = {}) => {
+const getItems = async () => {
   loading.value = true;
+
   try {
+    const route = `/${table.value}`;
+
     const {
       page = 1,
       itemsPerPage: take = 10,
       sortBy = [{ key: undefined, order: undefined }],
-    } = options;
-
-    const route = `/${table.value}`;
+    } = tableOptions.value;
 
     const params = {
+      take,
       sort: sortBy[0]?.key,
       order: sortBy[0]?.order,
-      take,
       skip: take * (page - 1),
-      // search: search.value,
+      search: search.value,
     };
+
+    saveParamsInUrlQuery(params);
 
     const { data } = await axios.get(route, { params });
 
@@ -140,27 +147,21 @@ const getFields = async () => {
   }
 };
 
-function handleOptionsUpdate(e: any) {
+function saveParamsInUrlQuery(params: any) {
   const currentQuery = route.query;
-  const { itemsPerPage, page, sortBy, search } = e;
+
   const query: any = {
     ...currentQuery,
-    itemsPerPage,
-    page,
-    search,
+    ...params,
   };
-  if (sortBy.length) {
-    const { key: sort, order } = sortBy[0];
-    query.sort = sort;
-    query.order = order;
-  } else {
-    query.sort = undefined;
-    query.order = undefined;
-  }
+
   router.replace({
     query,
   });
+}
 
-  getItems(e);
+function handleTableOptionsUpdate(event: any) {
+  tableOptions.value = event;
+  getItems();
 }
 </script>
