@@ -67,9 +67,9 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" @click="dialog = false">Close</v-btn>
-          <v-btn color="primary" type="submit" :loading="creating"
-            >Create {{ table }}</v-btn
-          >
+          <v-btn color="primary" type="submit" :loading="creating">
+            Create {{ table }}
+          </v-btn>
         </v-card-actions>
       </v-form>
     </v-card>

@@ -8,52 +8,34 @@
     </v-toolbar>
     <v-divider />
     <v-card-text>
-      <!-- TODO: use v-data-table-server -->
-      <v-table>
-        <thead>
-          <tr>
-            <th class="text-left">See</th>
-            <th v-for="field in primitiveFields" :key="`header_${field.name}`">
-              <v-btn
-                variant="text"
-                class="text-capitalize"
-                :append-icon="headerButtonIcon(field)"
-                @click="headerButtonClicked(field)"
-              >
-                {{ field.name }}
-              </v-btn>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in items" :key="index">
-            <td>
-              <v-btn
-                v-if="primaryKeyField"
-                icon="mdi-arrow-right"
-                :to="{
-                  name: 'item',
-                  params: { table, primaryKey: item[primaryKeyField] },
-                }"
-                flat
-              />
-            </td>
-            <td
-              v-for="field in primitiveFields"
-              :key="`item_${index}_${field.name}`"
-            >
-              {{ item[field.name] }}
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
-      <TablePagination :total="total" />
+      <!-- TODO: search -->
+      <v-data-table-server
+        :headers="headers"
+        :items="items"
+        :items-length="total"
+        :items-per-page="tableOptions.itemsPerPage"
+        :page="tableOptions.page"
+        :sort-by="tableOptions.sortBy"
+        @update:options="handleOptionsUpdate"
+      >
+        <template v-slot:item.details="{ item }">
+          <v-btn
+            v-if="primaryKeyField"
+            variant="flat"
+            icon="mdi-eye"
+            :to="{
+              name: 'item',
+              params: { table, primaryKey: item[primaryKeyField] },
+            }"
+          />
+        </template>
+      </v-data-table-server>
     </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
-import { VTable } from "vuetify/components/VTable";
+import { VDataTableServer } from "vuetify/components/VDataTable";
 import { VCard, VCardText } from "vuetify/components/VCard";
 import { VDivider } from "vuetify/components/VDivider";
 import { VToolbar, VToolbarTitle } from "vuetify/components/VToolbar";
@@ -61,7 +43,6 @@ import { VBtn } from "vuetify/components/VBtn";
 import { VSpacer } from "vuetify/components/VGrid";
 
 import NewItemDialog from "../components/NewItemDialog.vue";
-import TablePagination from "../components/TablePagination.vue";
 
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, computed, watch } from "vue";
@@ -70,35 +51,23 @@ import axios from "axios";
 const route = useRoute();
 const router = useRouter();
 
-const updateQuery = (newItem: any) => {
-  const query = { ...route.query, ...newItem };
-  // Preventing route duplicates
-  if (JSON.stringify(route.query) !== JSON.stringify(query))
-    router.push({ query });
-};
-
 const total = ref(0);
 const items = ref([]);
 const fields = ref<any[]>([]);
 const loading = ref(false);
 const table = computed(() => route.params.table);
-const query = computed(() => route.query);
 
-// Overly complicated and needs to be done for every parameter
-// Will be simplified when Vuetify 3 releases data-tables
+const {
+  page = "1",
+  itemsPerPage = "10",
+  sort = undefined,
+  order = undefined,
+} = route.query;
 
-const sort = computed({
-  get: () => query.value.sort || primaryKeyField.value,
-  set(newVal) {
-    updateQuery({ sort: newVal });
-  },
-});
-
-const order = computed({
-  get: () => query.value.order || "desc",
-  set(newVal) {
-    updateQuery({ order: newVal });
-  },
+const tableOptions = ref({
+  page: Number(page),
+  itemsPerPage: Number(itemsPerPage),
+  sortBy: [{ key: sort, order: order }] as any,
 });
 
 const primitiveFields = computed(() =>
@@ -109,6 +78,16 @@ const primitiveFields = computed(() =>
 const primaryKeyField = computed(
   () => fields.value.find(({ isId }) => isId)?.name
 );
+
+const headers = computed(() => [
+  { title: "See", value: "details" },
+
+  ...primitiveFields.value.map(({ name }) => ({
+    title: name,
+    value: name,
+    sortable: true,
+  })),
+]);
 
 onMounted(() => {
   getFields();
@@ -121,16 +100,25 @@ watch(table, () => {
   getItems();
 });
 
-watch(query, () => {
-  if (!table.value) return;
-  getItems();
-});
-
-const getItems = async () => {
+const getItems = async (options: any = {}) => {
   loading.value = true;
   try {
+    const {
+      page = 1,
+      itemsPerPage: take = 10,
+      sortBy = [{ key: undefined, order: undefined }],
+    } = options;
+
     const route = `/${table.value}`;
-    const params = { ...query.value };
+
+    const params = {
+      sort: sortBy[0]?.key,
+      order: sortBy[0]?.order,
+      take,
+      skip: take * (page - 1),
+      // search: search.value,
+    };
+
     const { data } = await axios.get(route, { params });
 
     items.value = data.items;
@@ -152,19 +140,27 @@ const getFields = async () => {
   }
 };
 
-const headerButtonIcon = (field: any) => {
-  if (sort.value === field.name) {
-    if (order.value === "desc") return "mdi-arrow-up";
-    else return "mdi-arrow-down";
-  } else return undefined;
-};
-
-const headerButtonClicked = (field: any) => {
-  if (sort.value === field.name) {
-    if (order.value === "desc") order.value = "asc";
-    else order.value = "desc";
+function handleOptionsUpdate(e: any) {
+  const currentQuery = route.query;
+  const { itemsPerPage, page, sortBy, search } = e;
+  const query: any = {
+    ...currentQuery,
+    itemsPerPage,
+    page,
+    search,
+  };
+  if (sortBy.length) {
+    const { key: sort, order } = sortBy[0];
+    query.sort = sort;
+    query.order = order;
   } else {
-    sort.value = field.name;
+    query.sort = undefined;
+    query.order = undefined;
   }
-};
+  router.replace({
+    query,
+  });
+
+  getItems(e);
+}
 </script>
