@@ -70,7 +70,7 @@ const search = ref(route.query.search);
 const tableOptions = ref({
   page: Number(route.query.page || "1"),
   itemsPerPage: Number(route.query.take || "10"),
-  sortBy: [{ key: route.query.sort, order: route.query.order }] as any,
+  sortBy: [{ key: route.query.sort, order: route.query.order }] as any[],
 });
 
 const table = computed(() => route.params.table);
