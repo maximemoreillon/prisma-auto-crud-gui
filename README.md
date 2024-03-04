@@ -4,6 +4,14 @@ A Vue module built with Vuetify to automatically create views for each table man
 
 ## Usage
 
+### As a Docker container
+
+```bash
+docker run -e VITE_API_URL=http://localhost:7070 -p 8080:80 moreillon/prisma-auto-crud-gui
+```
+
+### As a module in your Vue.js app
+
 Configure the module to be used in src/plugins/index.js as such:
 
 ```
