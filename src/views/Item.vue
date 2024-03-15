@@ -177,7 +177,7 @@ const updateItem = async () => {
       {}
     );
 
-    await axios.put(route, body);
+    await axios.patch(route, body);
     snackbar.show = true;
     snackbar.text = `${table.value} ${primaryKey.value} updated`;
     itemCopy.value = Object.assign({}, item.value);

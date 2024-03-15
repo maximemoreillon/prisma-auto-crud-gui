@@ -88,8 +88,8 @@ import { VBtn } from "vuetify/components/VBtn";
 // import SetItemDialog from "./SetItemDialog.vue";
 import Relateditem from "../components/RelatedItem.vue";
 
-import { ref, onMounted, computed, reactive } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted, computed, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 
 const props = defineProps({
@@ -101,12 +101,20 @@ const props = defineProps({
 });
 
 const router = useRouter();
-
+const route = useRoute();
 const fields = ref<any[]>([]);
 const dialog = ref(false);
 const fieldsLoading = ref(false);
 const creating = ref(false);
 const newItem = ref<any>({});
+
+const table = computed(() => route.params.table);
+
+// TODO: watch query
+watch(table, () => {
+  newItem.value = props.presets;
+  getFields();
+});
 
 onMounted(() => {
   newItem.value = props.presets;
